@@ -1,0 +1,152 @@
+{$cleq}
+$P*
+$U D:\XProfan\Projekte\Parcival\Parcival.pcu=Parcival
+$I D:\XProfan\Projekte\Parcival\Trackbar.Inc
+Def $Ver "1.0.7"
+Def Lower(1) If(&(1)>0,&(1),0)
+{$noerr}
+declare test%,ende&,hilfe&,csys&,labels&,alg&,modus%,color%,color&,modus&,alpha&,beta&,gamma&,formel&,ok&,drehx&,drehy&,drehz&,rxmin&,rxmax&,rymin&,rymax&,rzmin&,rzmax&,stepx&,stepy&,scalx&,scaly&,client&,Parcival#,grid&,triang&,version&,log&
+
+proc AddLog
+Parameters a$
+AddString(grid&,Time$(0)+":"+Time$(1)+"|"+a$)
+sendmessage(grid&,~LVM_EnsureVisible,GetCount(grid&)-1,0)
+endproc
+
+parcival#=New(Parcival)
+if parcival#.init%=0
+Messagebox("Die DLL Parcival.dll konnte nicht initialisiert werden. Bitte stellen Sie sicher, dass sie sich im gleichen Verzeichnis wie die Datei "+Par$(0)+" befindet!","Fehler",16)
+end
+elseif parcival#.init%=-1
+Messagebox("Die DLL Parcival.dll konnte nicht initialisiert werden, weil sie in einer inkompatiblen Version vorliegt. Bitte stellen Sie sicher, dass die DLL mit diesem Programm kompatibel ist.","Fehler",16)
+end
+elseif parcival#.init%<>1
+Messagebox("Mit der Parcival.dll liegt ein allgemeiner Fehler vor...","Fehler",16)
+end
+endif
+
+windowstyle 24
+WindowTitle "Parcival-Techdemo "+$Ver+", XProfan-Version: "+$ProfVer
+window Lower((%MaxX-916)/2),Lower((%MaxY-786)/2)-916,786
+CLS GetSysColor(15)
+UseFont "Arial",16,0,0,0,0
+SetDialogFont 1
+UserMessages 16
+UseBrush 1,RGB(255,255,255)
+UsePen 5,0,0
+client&=Create("Text",%hWnd,"",8,8,600,450)
+Startpaint client&
+Rectangle 0,0-600,450
+endpaint
+grid&=Create("Gridbox",%hWnd,"Zeit;0;80;Logbuch;0;498",0,8,540,600,206)
+AddLog("Initialisiere Anwendung...")
+Create("Text",%hWnd,"Alpha:",8,466,68,18)
+alpha&=Create("Trackbar",%hWnd,$100,68,462,540,24)
+SetTrackRange alpha&,0,359
+SetTrackPos alpha&,45
+Create("Text",%hWnd,"Beta:",8,490,68,18)
+beta&=Create("Trackbar",%hWnd,$100,68,486,540,24)
+SetTrackRange beta&,0,359
+SetTrackPos beta&,35
+Create("Text",%hWnd,"Gamma:",8,514,68,18)
+gamma&=Create("Trackbar",%hWnd,$100,68,510,540,24)
+SetTrackRange gamma&,0,359
+Create("Text",%hWnd,"Formel:",616,12,42,18)
+formel&=Create("Edit",%hWnd,"Cos(4*Sqrt(%x%²+%y%²))",664,8,236,24)
+Create("Groupbox",%hWnd,"Renderbereich",616,40,284,248)
+Create("Text",%hWnd,"X-Min:",632,62,40,18)
+rxmin&=Create("Edit",%hWnd,"-3",678,58,80,24)
+Create("Text",%hWnd,"X-Max:",632,90,40,18)
+rxmax&=Create("Edit",%hWnd,"3",678,86,80,24)
+Create("Text",%hWnd,"Y-Min:",632,118,40,18)
+rymin&=Create("Edit",%hWnd,"-3",678,114,80,24)
+Create("Text",%hWnd,"Y-Max:",632,146,40,18)
+rymax&=Create("Edit",%hWnd,"3",678,142,80,24)
+Create("Text",%hWnd,"Z-Min:",632,174,40,18)
+rzmin&=Create("Edit",%hWnd,"-1",678,170,80,24)
+Create("Text",%hWnd,"Z-Max:",632,202,40,18)
+rzmax&=Create("Edit",%hWnd,"1",678,198,80,24)
+Create("Text",%hWnd,"X-Schritt:",792,62,80,18)
+stepx&=Create("Edit",%hWnd,"0.1",792,86,80,24)
+Create("Text",%hWnd,"Y-Schritt:",792,118,80,18)
+stepy&=Create("Edit",%hWnd,"0.1",792,142,80,24)
+Create("Text",%hWnd,"X-Skalierung:",632,230,120,18)
+scalx&=Create("Edit",%hWnd,"0.2",792,226,80,24)
+Create("Text",%hWnd,"Y-Skalierung:",632,258,120,18)
+scaly&=Create("Edit",%hWnd,"0.2",792,254,80,24)
+Create("Groupbox",%hWnd,"Drehpunkt",616,290,124,106)
+Create("Text",%hWnd,"X:",632,312,40,18)
+drehx&=Create("Edit",%hWnd,"0",648,308,80,24)
+Create("Text",%hWnd,"Y:",632,340,40,18)
+drehy&=Create("Edit",%hWnd,"0",648,336,80,24)
+Create("Text",%hWnd,"Z:",632,368,40,18)
+drehz&=Create("Edit",%hWnd,"0",648,364,80,24)
+modus&=Create("Choicebox",%hWnd,1,746,294,156,128)
+AddString(modus&,"Drahtgittermodell")
+AddString(modus&,"Mit Grenzlinien")
+AddString(modus&,"Ohne Grenzlinien")
+sendmessage(modus&,$14E,1,0)
+color&=Create("Choicebox",%hWnd,0,746,326,156,128)
+AddString(color&,"Flächenfüllung")
+AddString(color&,"Farbverlauf 1")
+AddString(color&,"Graustufen")
+AddString(color&,"Farbverlauf 2")
+AddString(color&,"Eigener Farbverlauf")
+sendmessage(color&,$14E,1,0)
+csys&=Create("Checkbox",%hWnd,"Koordinatensystem",746,354,156,18)
+labels&=Create("Checkbox",%hWnd,"Labels",746,376,156,18)
+Create("Text",%hWnd,"Algorithmus für Farbverlauf:",616,402,200,18)
+alg&=Create("Edit",%hWnd,"",616,424,288,24)
+triang&=Create("Checkbox",%hWnd,"Dreiecksmodus",616,456,200,18)
+version&=Create("Checkbox",%hWnd,"Versionsinfo anzeigen",616,480,200,18)
+log&=Create("Checkbox",%hWnd,"Log-Datei schreiben",616,504,200,18)
+ok&=Create("Button",%hWnd,"Zeichnen",780,668,124,24)
+hilfe&=Create("Button",%hWnd,"Hilfe",780,696,124,24)
+ShowWindow(hilfe&,FileExists($ProgDir+"Hilfe\\Anleitung.htm"))
+ende&=Create("Button",%hWnd,"Beenden",780,724,124,24)
+AddLog("Parcival-Version: "+parcival#.version$)
+AddLog("Release-Datum: "+parcival#.date$)
+AddLog("Unit-Version: "+parcival#.pcuversion$)
+AddLog("Initialisierung beendet...")
+MCLS 600,450,RGB(255,255,255)
+while 1
+EnableWindow color&,sendmessage(modus&,$147,0,0)<>0
+EnableWindow alg&,sendmessage(color&,$147,0,0)=4
+EnableWindow labels&,GetCheck(csys&)
+EnableWindow csys&,GetCurSel(modus&)<>2
+waitinput
+if (%UMessage=16) | Clicked(ende&)
+parcival#.deinit()
+Dispose parcival#
+end
+elseif Clicked(hilfe&) | MenuItem(9001)
+ShellExec($ProgDir+"Hilfe\\Anleitung.htm","open",3)
+elseif Clicked(ok&) | MenuItem(9000)
+Startpaint -1
+UseBrush 1,RGB(255,255,255)
+Rectangle 0,0-600,450
+AddLog("Initialisieren...")
+parcival#.SetHandler(7,GetCheck(triang&))
+parcival#.SetHandler(5,GetCheck(version&))
+parcival#.SetHandler(4,GetCheck(log&))
+Parcival#.Init3D(%HDC,%HDC2,0,0,600,450,0,RGB(255,255,0),If(GetText$(alg&)="","",GetText$(alg&)))
+modus%=sendmessage(modus&,$147,0,0)
+color%=sendmessage(color&,$147,0,0)
+AddLog("Rendern...")
+parcival#.Render3D(GetText$(formel&),Val(GetText$(rxmin&)),Val(GetText$(rxmax&)),Val(GetText$(rymin&)),Val(GetText$(rymax&)),Val(GetText$(rzmin&)),Val(GetText$(rzmax&)),Val(GetText$(stepx&)),Val(GetText$(stepy&)),0)
+if parcival#.error%
+AddLog("Fehler: "+Str$(parcival#.error%))
+AddLog("Fehlerstring: "+parcival.errcode(parcival#.error%))
+else
+AddLog("Anzeigen...")
+parcival#.View3D(GetTrackPos(alpha&),GetTrackPos(beta&),GetTrackPos(gamma&),Val(GetText$(drehx&)),Val(GetText$(drehy&)),Val(GetText$(drehz&)),Val(GetText$(scalx&)),Val(GetText$(scaly&)),8*(modus%=0)+4*(modus%=2)+color%+16*GetCheck(csys&)+32*GetCheck(labels&),0)
+AddLog("Fertig...")
+UseBrush 0,0
+Rectangle 0,0-600,450
+endif
+EndPaint
+StartPaint client&
+MCopyBmp 0,0-600,450>0,0;0
+EndPaint
+endif
+endwhile

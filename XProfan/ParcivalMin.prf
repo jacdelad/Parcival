@@ -1,0 +1,103 @@
+$MAKE N
+$TOOL N D:\XProfan\XProfan\PROFCOMP.EXE "%"
+$L
+Def ?_XParse(5) !"ParcivalMin","Parse"
+Def ?_Date(1) !"ParcivalMin","Date"
+Def ?_Version(1) !"ParcivalMin","Version"
+Def ?_Edition(1) !"ParcivalMin","Edition"
+Def ?_XErrCode(2) !"ParcivalMin","ErrCode"
+Def ?_GEH(1) !"ParcivalMin","GetErrorHandling"
+Def ?_SEH(2) !"ParcivalMin","SetErrorHandling"
+Def ?_MinimumParcival(0) !"ParcivalMin","MinimumParcival"
+Def ?_ErrCnt(0) !"ParcivalMin","ErrCnt"
+Def ?_XValidate(1) !"ParcivalMin","Validate"
+Def ?_SetVariable(2) !"ParcivalMin","SetVariable"
+Def %?_Version 10001
+declare ?_dllh&,?_PCUVersion$,?_Init%,?_time&,?_error%,?_iterations&,?_errcnt%,?_Date$,?_Version$,?_Edition$
+
+proc ?_Init
+Parameters p$
+declare i&,d#,l%
+if ""<>p$
+if FileExists(p$)
+?_dllh&=UseDLL(p$)
+else
+?_dllh&=UseDll(p$+If("\"=Right$(p$,1),"","\")+"ParcivalMin.dll")
+endif
+else
+p$=$ProgDir
+?_dllh&=UseDLL(p$+If("\"=Right$(p$,1),"","\")+"ParcivalMin.dll")
+endif
+if ?_dllh&
+if ?_MinimumParcival()=%?_Version
+?_PCUVersion$="1.0.0.0003"
+?_init%=1
+?_time&=0
+?_error%=0
+?_iterations&=0
+?_errcnt%=?_ErrCnt()
+Dim d#,32
+l%=?_Date(d#)
+?_Date$=Char$(d#,0,l%)
+l%=?_Version(d#)
+?_Version$=Char$(d#,0,l%)
+l%=?_Edition(d#)
+?_Edition$=Char$(d#,0,l%)
+Dispose d#
+else
+?_init%=2
+endif
+endif
+Return ?_init%
+endproc
+
+proc ?_Set
+parameters a$,b$
+Return ?_SetVariable(Addr(a$),Addr(b$))
+endproc
+
+proc ?_SetHandler
+parameters bit&,wert&
+Return ?_SEH(bit&,wert&)
+endproc
+
+proc ?_GetHandler
+Parameters bit&
+Return ?_GEH(bit&)
+endproc
+
+proc ?_ErrCode
+declare d#,p$,l%,k&
+Dim d#,128
+k&=If(%PCount,%(1),?_error%)
+l%=?_XErrCode(k&,d#)
+p$=Char$(d#,0,l%)
+Dispose d#
+Return p$
+endproc
+
+proc ?_Parse
+Parameters t$
+declare e#,p$,e&,i&,l%
+?_time&=&GetTickCount
+Dim e#,128
+l%=?_XParse(Addr(t$),e#,Addr(e&),Addr(i&),1)
+?_time&=&GetTickCount-?_time&
+p$=Char$(e#,0,l%)
+?_error%=e&
+?_iterations&=i&
+Dispose e#
+Return p$
+endproc
+
+proc ?_DeInit
+if ?_Init%
+?_Init%=0
+FreeDLL ?_dllh&
+endif
+endproc
+
+proc ?_Validate
+Parameters p$
+Return ?_XValidate(Addr(p$))
+endproc

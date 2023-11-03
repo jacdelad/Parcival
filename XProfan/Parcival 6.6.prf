@@ -1,0 +1,190 @@
+$L
+{$c}
+Def ?_Parse(5) !"Parcival","Parse"
+Def ?_Date(1) !"Parcival","Date"
+Def ?_Version(1) !"Parcival","Version"
+Def ?_ErrCode(2) !"Parcival","ErrCode"
+Def ?_GEH(1) !"Parcival","GetErrorHandling"
+Def ?_SEH(2) !"Parcival","SetErrorHandling"
+Def ?_Graph(15) !"Parcival","Graph"
+Def ?_Table(6) !"Parcival","Table"
+Def ?_GLR(1) !"Parcival","GetLastResult"
+Def ?_Amid(2) !"Parcival","Amid"
+Def ?_MinimumParcival(0) !"Parcival","MinimumParcival"
+Def ?_I3D(8) !"Parcival","Init3D"
+Def ?_R3D(12) !"Parcival","Render3D"
+Def ?_V4D(15) !"Parcival","ViewAnimation"
+Def ?_ErrCnt(0) !"Parcival","ErrCnt"
+Def ?_Validate(1) !"Parcival","Validate"
+Def ?_Convert(5) !"Parcival","Convert"
+Def %?_Minimum 5
+
+Class ?_=?_@,Convert@,#dllh&,Result$,Validate@,Init@,View4D@,View3D@,Render3D@,Init3D@,Table@,Graph@,GetHandler@,SetHandler@,ErrCode@,DeInit@,Date$(10),Version$(16),PCUVersion$(16),Parse@,iterations&,error%,time&,#Table2@,Sum@,Product@,amid!,gmid!,hmid!,Polycount&,errcnt%,init%
+
+proc ?_.Convert
+Parameters basis&,e1&,e2&,wert!
+declare erg!
+?_Convert(basis&,e1&,e2&,Addr(wert!),Addr(erg!))
+.Result$=Str$(erg!)
+Return erg!
+endproc
+
+proc ?_.?_
+Parameters p$
+declare i&,d#,p$,l%
+if FileExists(p$)
+.dllh&=UseDLL(p$)
+else
+case Equ$("",p$):p$=$ProgDir
+.dllh&=UseDLL(p$+If(Equ$("\",Right$(p$,1)),"","\")+"Parcival.dll")
+endif
+if .dllh&
+if Equ(?_MinimumParcival(),%?_Minimum)
+.PCUVersion$="2.5.1.0027"
+.amid!=0
+.gmid!=0
+.hmid!=0
+.time&=0
+.error%=0
+.iterations&=0
+.errcnt%=?_ErrCnt()
+Dim d#,32
+l%=?_Date(d#)
+.Date$=Char$(d#,0,l%)
+l%=?_Version(d#)
+.Version$=Char$(d#,0,l%)
+.init%=1
+Dispose d#
+else
+.init%=-1
+endif
+endif
+Return .init%
+endproc
+
+proc ?_.Init
+Parameters p$
+Return .?_(p$)
+endproc
+
+proc ?_.View4D
+Parameters a!,b!,c!,d!,e!,f!,g!,h!,f&,i!,j!,k!,l&,m&,r&
+Return ?_V4D(Addr(a!),Addr(b!),Addr(c!),Addr(d!),Addr(e!),Addr(f!),Addr(g!),Addr(h!),f&,Addr(i!),Addr(j!),Addr(k!),l&,m&,r&)
+endproc
+
+proc ?_.View3D
+Parameters a!,b!,c!,d!,e!,f!,g!,h!,f&
+Return ?_.View4D(a!,b!,c!,d!,e!,f!,g!,h!,f&,0,0,0,1,1)
+endproc
+
+proc ?_.Render3D
+Parameters t$,a!,b!,c!,d!,e!,f!,g!,h!,pa&
+declare i&,t&,p&
+t&=&GetTickCount
+.error%=?_R3D(Addr(t$),Addr(a!),Addr(b!),Addr(c!),Addr(d!),Addr(e!),Addr(f!),Addr(g!),Addr(h!),Addr(i&),Addr(p&),pa&)
+.time&=&GetTickCount-t&
+.iterations&=i&
+.PolyCount&=p&
+Return .error%
+endproc
+
+proc ?_.Init3D
+Parameters a&,b&,c&,d&,e&,f&,g&,h&
+Return ?_I3D(a&,b&,c&,d&,e&,f&,g&,h&)
+endproc
+
+proc ?_.Table
+Parameters term$,min!,max!,step!
+.Result$=?_.Table2(term$,min!,max!,step!,0)
+Return .Result$
+endproc
+
+proc ?_.Sum
+Parameters term$,min!,max!,step!
+.Result$=?_.Table2(term$,min!,max!,step!,1)
+Return .Result$
+endproc
+
+proc ?_.Product
+Parameters term$,min!,max!,step!
+.Result$=?_.Table2(term$,min!,max!,step!,2)
+Return .Result$
+endproc
+
+proc ?_.Graph
+Parameters term$,hand1&,hand2&,xleft&,yleft&,xright&,yright&,xmi!,xma!,ymi!,yma!,sx!,color&,flags&
+declare it&
+.time&=&GetTickCount
+.error%=?_Graph(Addr(term$),hand1&,hand2&,xleft&,yleft&,xright&,yright&,Addr(xmi!),Addr(xma!),Addr(ymi!),Addr(yma!),Addr(sx!),color&,flags&,Addr(it&))
+.time&=&GetTickCount-.time&
+.iterations&=it&
+endproc
+
+proc ?_.SetHandler
+parameters bit&,wert&
+Return ?_SEH(bit&,wert&)
+endproc
+
+proc ?_.GetHandler
+Parameters bit&
+Return ?_GEH(bit&)
+endproc
+
+proc ?_.ErrCode
+declare d#,p$,l%,k&
+Dim d#,128
+k&=If(%PCount,%(1),.error%)
+l%=?_ErrCode(k&,d#)
+p$=Char$(d#,0,l%)
+Dispose d#
+Return p$
+endproc
+
+proc ?_.Parse
+Parameters t$
+declare e#,p$,e&,i&,l%
+.time&=&GetTickCount
+Dim e#,128
+l%=?_Parse(Addr(t$),e#,Addr(e&),Addr(i&),1)
+.time&=&GetTickCount-.time&
+p$=Char$(e#,0,l%)
+.error%=e&
+.iterations&=i&
+Dispose e#
+.Result$=p$
+Return p$
+endproc
+
+proc ?_.Table2
+Parameters term$,min!,max!,step!,typ%
+declare e$,e#,i&,l&,mc&,amid!,gmid!
+mc&=&GetTickCount
+l&=?_Table(Addr(term$),Addr(min!),Addr(max!),Addr(step!),Addr(i&),typ%)
+.time&=&GetTickCount-mc&
+.iterations&=i&
+dim e#,l&+2
+?_GLR(e#)
+e$=Translate$(Char$(e#,0,l&),",",".")
+Dispose e#
+Dim e#,48
+l&=?_Amid(e#,0)
+.amid!=Val(Char$(e#,0,l&))
+l&=?_Amid(e#,1)
+.gmid!=Val(Char$(e#,0,l&))
+l&=?_Amid(e#,2)
+.hmid!=Val(Char$(e#,0,l&))
+Dispose e#
+Return e$
+endproc
+
+proc ?_.DeInit
+if .Init%
+.Init%=0
+FreeDLL .dllh&
+endif
+endproc
+
+proc ?_.Validate
+Parameters p$
+Return ?_Validate(Addr(p$))
+endproc

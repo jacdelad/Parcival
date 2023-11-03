@@ -1,0 +1,35 @@
+$U D:\Projekte\Parcival\Parcival.pcu=Parcival
+Def GSC(1) !"USER32","GetSysColor"
+declare gb&,ok&,st&,spit3&,p#,x%,t&
+Dim p#,Parcival
+p#.Init("D:\Projekte\Parcival 1.0")
+windowtitle "Parser-Tormentor 1.0"
+windowstyle 26
+window 400,400-600,400
+cls GSC(15)
+gb&=Create("GridBox",%HWnd,"Test;0;128;Durchläufe;0;72;Formel;0;230;Parcival;0;80;Spit3;0;80",0,0,594,344)
+ok&=Create("Button",%HWnd,"&OK",514,344,80,24)
+st&=Create("Text",%HWnd,"Erzeuge Fenster...",8,348,400,24)
+EnableWindow ok&,0
+AddString(gb&,"Addition|1'000'000|23.5+93.5+32.626")
+AddString(gb&,"Subtraktion|1'000'000|23.5-93.5-32.626")
+AddString(gb&,"Multiplikation|1'000'000|23.5*93.5*32.626")
+AddString(gb&,"Division|1'000'000|23.5/93.5/32.626")
+
+x%=0
+SetText st&,"Vorbereitung..."
+Sleep 5000
+while x%<4
+SetText st&,"Parse "+GetText$(gb&,x%,0)+"..."
+t&=&GetTickCount
+whileloop 10000
+p#.Parse(GetText$(gb&,x%,1))
+wend
+SetText gb&,x%,3,Str$((&GetTickCount-t&)/10000)
+Inc x%
+wend
+EnableWindow ok&,1
+p#.DeInit()
+Dispose p#
+waitinput
+

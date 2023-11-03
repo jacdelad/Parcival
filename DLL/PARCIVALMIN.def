@@ -1,0 +1,24 @@
+XPSE PCU-Exports Fileversion 1
+PARCIVALMIN.PCU Exporte (20100513220754)
+ |
+ |   [+]-INIT
+ |   [^]-Params: p$
+ |   
+ |   [+]-SET
+ |   [^]-Params: a$,b$
+ |   
+ |   [+]-SETHANDLER
+ |   [^]-Params: bit&,wert&
+ |   
+ |   [+]-GETHANDLER
+ |   [^]-Params: bit&
+ |   
+ |   [+]-ERRCODE
+ |   
+ |   [+]-PARSE
+ |   [^]-Params: t$
+ |   
+ |   [+]-DEINIT
+ |   
+ |   [+]-VALIDATE
+ |   [^]-Params: p$

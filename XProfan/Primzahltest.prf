@@ -1,0 +1,50 @@
+$MAKE N
+$TOOL N D:\XProfan\XProfan\PROFCOMP.EXE "%"
+$H Windows.ph 
+$H Messages.ph 
+DEF GETSYSCOLOR(1) !"USER32","GetSysColor" 
+Def @GetFileTitle(3) !"COMDLG32.DLL", "GetFileTitleA" 
+'DEF NEdit(2) !"NEdit.dll","InitMessages" 
+DEF &True 1 
+DEF &False 0 
+$U D:\XProfan\SOURCE\Erweiterungen\Thread.pcu\lib\thread.pcu=P. 
+'$I an_area.inc = FA_ 
+'$I Listview_Funktionen.inc 
+'$I PROFALT.INC 
+'$I USER.INC 
+'$I PRFDAT32.INC 
+@Set("TrueColor",1) 
+@Set("Decimals",2) 
+Var Version$ = "Ver 0.190902"
+
+
+
+
+
+
+
+progend
+'{$iq}
+'$CLEQ
+$U ParcivalMin.PCU=P.
+declare a$
+
+cls
+MessageBox("hh","hh",0)
+P.Init("D:\\XProfan\\Projekte\\Parcival")
+MessageBox("hh","hh",0)
+'Print P.Version(Addr(a$))
+Print P.Parse("9.61*5.13/2")
+Print P.Parse("9.61/2*5.13")
+waitinput
+
+
+progend
+P.Init("E:\Projekte\Parcival")
+cls
+whileloop 0,1000
+case P.Parse("Prim("+Str$(&Loop)):Print Str$(&Loop)
+endwhile
+Print "-Taste-"
+P.DeInit()
+Waitinput

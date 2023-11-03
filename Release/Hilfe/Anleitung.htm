@@ -1,0 +1,2783 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="de">
+<meta name="GENERATOR" content="Microsoft FrontPage 6.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Parcival 2.9.0.0090</title>
+<meta name="Microsoft Theme" content="zero 011">
+<style>
+<!--
+ li.MsoNormal
+	{mso-style-parent:"";
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	margin-left:0cm; margin-right:0cm; margin-top:0cm}
+-->
+</style>
+</head>
+
+<body background="zertxtr.gif" bgcolor="#000000" text="#FFFFFF" link="#6699CC" vlink="#669966" alink="#999999">
+
+<!--mstheme--><font face="arial,helvetica">
+
+<p align="center"><font face="Trebuchet MS"><u><b><font size="7">Parcival - Der Matheparser<br>
+</font><font size="4">Version 2.9.2.0093 mit 135 mathematischen Operationen vom 
+28. Dezember 2016<br>
+Für XProfan 8 und höher, geschrieben in Delphi 2006<br>
+Copyright (c) 2006-2016 by Jac de Lad, bloody random</font></b></u></font></p>
+<p align="left"><font face="Trebuchet MS"><b><u><font size="4">Wichtige Hinweise:<br>
+</font>
+</u>- Die Units 
+der verschiedenen Parcival-Versionen sind untereinander nicht kompatibel!<br>
+- Die verschiedenen Parcival-Versionen sollten der Kompatibilität wegen 
+ausschließlich 
+mit der mitgelieferten Unit verwendet werden!</b></font></p>
+<p align="left"><u><b><font size="6" face="Trebuchet MS">Inhalt:</font></b></u></p>
+<ol>
+  <li><font face="Trebuchet MS"><a href="#1">Benutzung der Unit</a> (<a href="#Standard">Standard-Edition</a>,
+  <a href="#Plus">Plus-Edition</a>)</font></li>
+  <li><font face="Trebuchet MS"><a href="#2">Struktur eines Terms</a></font></li>
+  <li><font face="Trebuchet MS"><a href="#3">Operatoren</a></font></li>
+  <li><font face="Trebuchet MS"><a href="#4">Funktionen</a></font></li>
+  <li><font face="Trebuchet MS"><a href="#5">Konstanten/Variablen</a></font></li>
+  <li><font face="Trebuchet MS"><a href="#6">Flags</a></font></li>
+  <li><a href="#7"><font face="Trebuchet MS">Handler</font></a></li>
+  <li><font face="Trebuchet MS"><a href="#8">Fehlernummern</a></font></li>
+  <li><font face="Trebuchet MS"><a href="#10">Was ist neu und was soll noch 
+  kommen?</a></font></li>
+  <li><font face="Trebuchet MS"><a href="#9">Über mich und meine Motivation</a></font></li>
+  <li><font face="Trebuchet MS"><a href="#11">Danksagungen und 
+  Urheberverzeichnis</a></font></li>
+</ol>
+<p><b><u><font size="5" face="Trebuchet MS"><a name="1"></a>1. Benutzung der Unit</font></u></b></p>
+<p><b><font face="Trebuchet MS"><a name="Standard"></a>Standard-Edition:</font></b></p>
+<p><font face="Trebuchet MS">Die Standard-Edition enthält keine Klasse. Ihre 
+Funktionen werden direkt aufgerufen, je nachdem, wie der Platzhalter für die 
+Unit gewählt wurde. Beispiel:</font></p>
+<p><font face="Trebuchet MS">Ab XProfan 8:<br>
+<font color="#00FFFF">$U ParcivalMin.pcu=P.<br>
+CLS<br>
+P.Init()</font></font><font color="#00FFFF" face="Trebuchet MS"><br>
+Print P.Parse(&quot;3+6*3&quot;)<br>
+P.DeInit()<br>
+waitinput</font></p>
+<p><font face="Trebuchet MS">Folgende Funktionen und Variablen sind in der 
+Standard-Edition vorhanden:<br>
+?_Init(), ?_Set(), ?_SetHandler(), ?_GetHandler(), ?_ErrCode(), ?_Parse, 
+?_DeInit(), ?_Validate(), ?_PCUVersion$, ?_Init%, ?_time&amp;, 
+?_error%, ?_iterations&amp;, ?_errcnt%, ?_Date$, ?_Version$<br>
+Die genaueren Beschreibung der Funktionalität sind den Pendants in der 
+Plus-Edition zu entnehmen. Der Handler 4 (Logfile) ist ohne Funktion und wird in 
+der Standard-Edition ignoriert!<br>
+&nbsp;</font></p>
+<p><b><font face="Trebuchet MS"><a name="Plus"></a>Plus-Edition:</font></b></p>
+<p><font face="Trebuchet MS">Die Unit muss mittels $U eingebunden werden. Der Platzhalter bestimmt über 
+den Namen der Klasse! Um die Unit zu verwenden muss eine Bereichsvariable mit 
+der Klasse Math (bzw. je nachdem welcher Platzhalter in $U verwendet wird, 
+sollte aber stets OHNE (!) Punkt oder Unterstrich am Ende verwendet werden!!!) 
+dimensioniert werden (die Größe der Klassen verschiedener Versionen der Unit 
+können aufgrund der Weiterentwicklung voneinander abweichen; die verschiedenen 
+Units sind nicht miteinander kompatibel; es ist möglich mehrere 
+Parcival-Versionen zu includieren, wenn jede Unit einen anderen Platzhalter 
+bekommt):<br>
+<font color="#0000FF"><br>
+</font>XProfan 8 und höher:<br>
+<font color="#00FFFF">$U Parcival.pcu=Math<br>
+Declare m#<br>
+Dim m#,Math<br>
+if m#.Init()=1
+</font>oder<font color="#00FFFF"> if m#.Init(&quot;C:\DLLVerzeichnis&quot;)=1</font> oder<font color="#00FFFF"> 
+if m#.Init(&quot;C:\DLLVerzeichnis\WeißderGeier.dll&quot;)=1<br>
+...<br>
+endif<br>
+m#.DeInit()<br>
+</font></font>
+<font color="#00FFFF" face="Trebuchet MS">Dispose m#</font></p>
+<p><font face="Trebuchet MS">Ab XProfan 9 und höher:<br>
+</font><font face="Trebuchet MS" color="#00FFFF">$U Parcival.pcu=Math<br>
+Declare m#<br>
+m#=New(Math)
+</font>
+<font face="Trebuchet MS">oder <font color="#00FFFF">m#=New(Math,&quot;C:\DLLVerzeichnis&quot;)</font> 
+oder <font color="#00FFFF">m#=New(Math,&quot;C:\DLLVerzeichnis\WeißderGeier.dll&quot;)</font><br>
+</font>
+<font face="Trebuchet MS" color="#00FFFF">if m#.init%=1<br>
+...<br>
+endif<br>
+m#.DeInit()<br>
+Dispose m#</font></p>
+<p><font face="Trebuchet MS">Die Benutzung von Klassen kann im Profan-Handbuch nachgeschlagen werden! 
+<font color="#00FFFF">.DeInit() </font>und <font color="#00FFFF">Dispose</font> 
+am Ende nicht vergessen (.DeInit muss vor Dispose kommen)! .Init() wird unten erklärt und ist nur nötig, wenn der 
+Bereich nicht mit New() initialisiert wurde (Die Parameter für New() sind 
+identisch mit denen von .Init()).</font></p>
+<p><font face="Trebuchet MS">Die Klasse enthält nun folgende Funktionen und Variablen:<br>
+<br>
+<font color="#00FFFF">.Init([Pfad|Dateiname])</font> – Die DLL wird  initialisiert. Außerdem werden noch andere Initialisierungen vorgenommen, die 
+hier nicht näher erwähnenswert sind. Wird der Parameter nicht angegeben, wird 
+die DLL in $ProgDir gesucht. Anstelle des Verzeichnisses kann auch der Dateiname 
+der DLL direkt angegeben werden. Diese Funktion testet auch, ob die verwendete DLL 
+mit der Unit kompatibel ist. Die Rückgabewerte stehen bei .Init%.<b> ACHTUNG</b>: Diese Funktion ist nur nötig, wenn Parcival nicht mithilfe der Profan-Funktion &quot;New()&quot; (ab XProfan 9) initialisiert wurde!<br>
+<br>
+<font color="#00FFFF">.Init% </font>- Diese Variable gibt an ob Parcival 
+initialisiert wurde. .Init% kann folgende Werte annehmen (identisch mit den 
+Rückgabewerten von .Init()):</font></p>
+<!--mstheme--></font>
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" width="79%" bordercolorlight="#666666" bordercolordark="#666666">
+  <tr>
+    <td width="13%" align="center"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Wert</font></b><!--mstheme--></font></td>
+    <td width="87%" align="center"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Bedeutung</font></b><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="13%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="87%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Die DLL 
+    wurde vollständig initialisiert und ist bereit</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="13%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="87%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Die DLL 
+    konnte nicht geladen oder initialisiert werden, bzw. die DLL wurde noch 
+    nicht per .Init() oder New() initialisiert</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="13%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">-1</font><!--mstheme--></font></td>
+    <td width="87%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Die DLL 
+    liegt in einer inkompatiblen Version vor</font><!--mstheme--></font></td>
+  </tr>
+</table>
+<!--mstheme--><font face="arial,helvetica">
+<p><font face="Trebuchet MS">
+<font color="#00FFFF">.DeInit()</font> – Deinitialisiert die DLL. Dieser Aufruf 
+ist nötig um alle Reste aus dem Speicher zu entfernen</font></p>
+<p><font face="Trebuchet MS">
+<font color="#00FFFF">.Version$</font> – Variable gibt die&nbsp; DLL-Version 
+zurück (wird erst gesetzt, wenn .Init() ausgeführt wurde!)</font></p>
+<p><font face="Trebuchet MS">
+<font color="#00FFFF">.PCUVersion$</font> – Variable gibt die PCU-Version zurück 
+(wird erst gesetzt, wenn .Init() ausgeführt wurde!)</font></p>
+<p><font face="Trebuchet MS">
+<font color="#00FFFF">.Date$ </font>– Gibt das Release-Datum zurück (wird erst 
+gesetzt, wenn .Init() ausgeführt wurde!)<br>
+<br>
+<font color="#00FFFF">.Edition$</font> - Variable, die einen String mit der 
+Editionsbezeichnung enthält (also entweder &quot;Standard&quot; oder &quot;Plus&quot;)</font></p>
+<p><font face="Trebuchet MS">
+<font color="#00FFFF">.Error%</font> - Variable, die die Nummer des zuletzt 
+aufgetretenen Fehlers enthält<br>
+<br>
+<font color="#00FFFF">.ErrCode([ErrNumber%])</font> – Funktion, die einen String 
+mit der Beschreibung des<br>
+a) angegebenen Fehlers oder bei Weglassen des Parameters<br>
+b) zuletzt aufgetretenen Fehlers<br>
+zurückgibt</font></p>
+<p><font face="Trebuchet MS">
+<font color="#00FFFF">.Parse(term$)</font> – Funktion, die einen String mit 
+dem Ergebnis des Terms liefert. Hinweise für den Umgang mit selbst definierten 
+Variablen <a href="#selbstvar">hier</a></font></p>
+<p><font face="Trebuchet MS"><font color="#00FFFF">.SetVar(v$,w$) </font>- 
+Funktion, mit der die Variable v$ (mit oder ohne &quot;%&quot; am Anfang/Ende) den Wert w$ 
+zugewiesen bekommt</font></p>
+<p><font face="Trebuchet MS"><font color="#00FFFF">.Validate(x$) </font>- 
+Ermittelt, ob der String als Zahl interpretiert werden kann<br>
+<br>
+<font color="#00FFFF">.Time&amp;</font> - Variable in der die Anzahl der benötigten 
+Millisekunden für die letzte Berechnung steht<br>
+<br>
+<font color="#00FFFF">.iterations&amp;</font> - Variable in der die Anzahl der 
+Iterationen (Einzelberechnungen) der letzten Berechnung steht (für .Parse, .Sum 
+und .Product)<br>
+<br>
+<font color="#00FFFF">.errcnt%</font> - Gibt die Anzahl der möglichen 
+Fehlermeldungen zurück (wird erst gesetzt, wenn .Init() ausgeführt wurde!)</font></p>
+<p><font face="Trebuchet MS">
+<font color="#00FFFF">.PolyCount&amp;</font> - Gibt die Anzahl der gerenderten 
+Polygone zurück (nach .Render3D)</font></p>
+<p><font face="Trebuchet MS"><font color="#00FFFF">.Amid! </font>- Das 
+arithmetische Mittel einer Tabelle, Summe oder eines Produkts</font></p>
+<p><font face="Trebuchet MS"><font color="#00FFFF">.Gmid! </font>- Das 
+geometrische Mittel einer Tabelle, Summe oder eines Produkts</font></p>
+<p><font face="Trebuchet MS"><font color="#00FFFF">.Hmid! </font>- Das 
+harmonische Mittel einer Tabelle, Summe oder eines Produkts</font></p>
+<p><font face="Trebuchet MS">
+<font color="#00FFFF">.Table(Term$,Startwert!,EndWert!,Step!)</font> – 
+Berechnet eine Sequenz von Startwert! bis Endwert! mit der Schrittweite Step!. 
+Term$ gibt den zu parsenden Term an. Der Rückgabewert ist 
+ein String mit den Ergebnissen, getrennt durch „|“. Nicht definierte 
+Funktionswerte werden durch „#“ ersetzt. Die Variablen .iterations&amp; 
+und .Time&amp; werden auch gesetzt! Der Platzhalter für die Variable ist „%x%“.<br>
+<br>
+<font color="#00FFFF">.Product(Term$,Startwert!,EndWert!,Step!)</font> – wie 
+.Table, nur dass der Ergebnisstring die Summe aller Werte enthält.<br>
+<br>
+<font color="#00FFFF">.Sum(Term$,Startwert!,EndWert!,Step!)</font> – wie 
+.Table, nur dass der Ergebnisstring das Produkt aller Werte enthält.<br>
+<br>
+<font color="#00FFFF">.SetHandler(Code%,Wert%)</font> – Setzt einen 
+Wert für einen Handlers (siehe Abschnitt <a href="#7">Handler</a>)<br>
+<br>
+<font color="#00FFFF">.GetHandler(Code%)</font> – Ermittelt den Status 
+eines Handlers. Der Rückgabewert ist der aktuelle Status.<br>
+<br>
+<font color="#00FFFF">.Graph(term$,hdc1&amp;,hdc2&amp;,x%,y%,dx%,dy%,xmin!,xmax!,ymin!,ymax!,step!,Farbe&amp;,Flags&amp;)</font> 
+– Diese Funktion zeichnet einen Graph. Die Ausgabe erfolgt in hwnd&amp;, an der 
+Position x%, y% und hat die Größe dx%, dy%. Die Eckdaten des (kartesischen) 
+Koordinatensystems sind in xmin!, xmax!, ymin! Und ymax! definiert. Step! gibt 
+die Schrittweite an, in der die Pixel gezeichnet werden. Wenn step!=0, dann wird 
+pro Pixel auf dem Bildschirm ein Wert errechnet. Term$ gibt den Term an, der 
+berechnet werden soll (als Variable wird „%x%“ verwendet). In Farbe&amp; steht die 
+Farbe des Graphen. Flags setzt sich aus folgenden Konstanten zusammen (weitere 
+folgen, zum Verwenden der Konstanten die „Parcival.ph“ einbinden):<br>
+~P_CoordSystem ($10) -&gt; Zeichnet die Abszisse und die Ordinate<br>
+~P_Labels ($20) -&gt; zeigt die Beschriftungen der X- und Y-Achse an (nur in 
+Verbindung mit P_Coordinates)</font></p>
+<p><font face="Trebuchet MS">
+<font color="#00FFFF">.Init3D(HDC1&amp;,HDC2&amp;,xleft%,yleft%,dx%,dy%,color&amp;,bcolor&amp;[,fillalg$])</font> 
+- Initialisiert die 3D-Darstellung. Die Parameter HDC1&amp; und HDC2&amp; stellen zwei 
+HDCs dar, auf denen der Graph dargestellt werden kann. xleft%, yleft%, dx% und 
+dy% geben die Position und Ausmaße innerhalb des Steuerelements an. Color&amp; gibt 
+die Strichfarbe an, bcolor&amp; die Füllfarbe der Polygone. Der optionale 
+Parameters fillalg$ kann Formeln für die Farbe der Füllung der Polygone 
+enthalten. Entweder wird eine Formel für den RGB-Wert angegeben oder einzelne 
+Formeln für jede Farbe (Rot, Grün, Blau) getrennt durch &quot;_&quot;. Folgende Variablen 
+sind in diesen Formeln gültig: %maxx%, %maxy%, %maxz%, %minx%, %miny%, %minz%, %x%, %y%, %z% (siehe Abschnitt
+<a href="#5">Konstanten/Variablen</a>). Die Werte der Formel müssen zwischen 0 
+und 16777215, bzw. bei geteilten Formeln zwischen 0 und 255 liegen, ansonsten 
+können merkwürdige Ergebnisse auftreten.</font></p>
+<p><font face="Trebuchet MS"><font color="#00FFFF">
+.Render3D(term$,xmin!,xmax!,ymin!,ymax!,zmin!,zmax!,stepx!,stepy![,proc&]) </font>- 
+Rendert den 3D-Graphen. Term$ gibt den Term an. Es können zusätzlich die 
+Variablen %x% für x und %y% für y angegeben werden. Xmin!, xmax!, ymin! und 
+ymax! geben die Bereiche für x und y an. zmin! und zmax! geben den 
+Anzeigenbereich für die Z-Achse an. stepx! und stepy! geben die Schrittweite in 
+X- und Y-Richtung an (bei Weglassen werden jeweils 40 Schritte ausgeführt). Die 
+Funktion muss vor .Render3D und .View3D/.View4D aufgerufen werden. proc&amp; stellt 
+die Adresse einer Prozedur dar, die per Callback aufgerufen wird. Als Parameter 
+wird ihr der Fortschritt in Prozent ausgegeben. Wird keine Adresse sondern 0 
+angegeben erfolgt kein Aufruf. Ist der Rückgabewert der Callback-Funktion 
+ungleich 0, so wird die aktuelle Operation abgebrochen. <b>ACHTUNG: </b>Bei Angabe einer 
+ungültigen Adresse kann es zu einem Systemabsturz oder schlimmeren kommen (man 
+denke nur, wenn die Funktion zum Formatieren einer Festplatte aufgerufen 
+wird...!).</font></p>
+<p><font color="#00FFFF" face="Trebuchet MS">
+.View3D(alpha!,beta!,gamma!,drehpx!,drehpy!,drehpz!,scalx!,scaly!,flags&amp;</font><font face="Trebuchet MS"><font color="#00FFFF">[,proc&])
+</font>- Zeichnet einen 3D-Graphen. Alpha!, beta! und gamma! sind die 
+Drehwinkel. drehpx!, drehpy! und drehpz! geben den Drehpunkt für die Winkel an. 
+scalx! und scaly! geben die Skalierung an (bei Weglassen sind beide 0.2). Die 
+Variable proc&amp; gibt die Adresse einer Callback-Funktion an, die zur Ausgabe des 
+Fortschritts aufgerufen wird. Als Parameter bekommt sie den aktuellen Frame 
+(logischerweise immer 1) und den Fortschritt in Prozent übergeben. Wird keine 
+Adresse sondern 0 angegeben erfolgt kein Aufruf. Ist der Rückgabewert der 
+Callback-Funktion ungleich 0, so wird die aktuelle Operation abgebrochen. 
+ACHTUNG: Bei 
+Angabe einer ungültigen Adresse kann es zu einem Systemabsturz oder schlimmeren 
+kommen (man denke nur, wenn die Funktion zum Formatieren einer Festplatte 
+aufgerufen wird...!).<br>
+Für Flag&amp; gelten die Parameter wie bei .Graph und zusätzlich:<br>
+~P_NoHideBackFace ($8) -&gt; Drahtgittermodell<br>
+~P_NoBorders ($4) -&gt; keine Polygonlinien zeichnen<br>
+~P_Colors ($1) -&gt; Zeichnet einen Cosinus-Farbverlauf in die Polygone (je nach 
+Höhe)<br>
+~P_Greyscale ($2) -&gt; Zeichnet einen Graustufenfarbverlauf in die Polygon (je 
+nach Höhe)<br>
+~P_Colors2 ($3) -&gt; Zeichnet einen linearen Farbverlauf in die Polygone (je nach 
+Höhe)<br>
+Die ersten beiden und die letzten 3 Parameter sind jeweils nicht miteinander 
+kombinierbar. Wurde ein selbst erstellter Algorithmus für die Füllung angegeben, 
+werden Flags für die Füllfarbe ignoriert!<br>
+<i>Copyright für Koordinatentransformationsformel by [::Mr Baque]</i></font></p>
+<p><font face="Trebuchet MS"><font color="#00FFFF">
+.View4D(alpha!,beta!,gamma!,drehpx!,drehpy!,drehpz!,scalx!,scaly!,flags&amp;,dalpha!,dbeta!,dgamma!,fps%,totalframes&amp;[,proc&])
+</font>- Zeichnet einen animierten 3D-Graphen. Alpha!, beta! und gamma! sind die 
+Drehwinkel. drehpx!, drehpy! und drehpz! geben den Drehpunkt für die Winkel an. 
+scalx! und scaly! geben die Skalierung an (bei Weglassen sind beide 0.2). 
+dalpha!, dbeta! und dgamma! geben den zu addierenden Winkel pro Einzelschritt 
+an. fps% gibt die Anzahl der Frames pro Sekunde an. Wenn fps% nicht gehalten 
+werden kann (Zeichnen zu langsam) werden automatisch Frames entfernt). totalframes&amp; gibt die 
+Gesamtzahl der Frames an. Die Variable proc&amp; gibt die Adresse einer 
+Callback-Funktion an, die zur Ausgabe des Fortschritts aufgerufen wird. Als 
+Parameter bekommt sie den aktuellen Frame und den Fortschritt in Prozent 
+übergeben. Wird keine Adresse sondern 0 angegeben erfolgt kein Aufruf. Ist der 
+Rückgabewert der Callback-Funktion ungleich 0, so wird die aktuelle Operation 
+abgebrochen. Bei Angabe einer ungültigen Adresse kann es zu einem Systemabsturz 
+oder schlimmeren kommen (man denke nur, wenn die Funktion zum Formatieren einer 
+Festplatte aufgerufen wird...!). Wird der Handler ~P_PreParse eingeschaltet, so wird die 
+Callback-Funktion auch aufgerufen, wenn der Graph auf den Bildschirm gezeichnet 
+wird. Der zweite Parameter ist dann -1, das Abbrechen ist weiterhin möglich.<br>
+Für flag&amp; gelten die Parameter wie bei .Graph und zusätzlich:<br>
+~P_NoHideBackFace ($8) -&gt; Drahtgittermodell<br>
+~P_NoBorders ($4) -&gt; keine Polygonlinien zeichnen<br>
+~P_Colors ($1) -&gt; Zeichnet einen Cosinus-Farbverlauf in die Polygone (je nach 
+Höhe)<br>
+~P_Greyscale ($2) -&gt; Zeichnet einen Graustufenfarbverlauf in die Polygon (je 
+nach Höhe)<br>
+~P_Colors2 ($3) -&gt; Zeichnet einen linearen Farbverlauf in die Polygone (je nach 
+Höhe)<br>
+Die ersten beiden und die letzten 3 Parameter sind jeweils nicht miteinander kombinierbar. 
+Wurde ein selbst erstellter Algorithmus für die Füllung angegeben, werden Flags 
+für die Füllfarbe ignoriert!<br>
+<i>Copyright für Koordinatentransformationsformel by [::Mr Baque]</i></font></p>
+<p><font face="Trebuchet MS"><font color="#00FFFF">.Convert(basis%,einheit1%,einheit2%,wert!)
+</font>- Rechnet Einheiten ineinander um. basis% ist die Basiseinheit, einheit1% 
+und einheit2% sind die Quell- und die Zieleinheit für den Wert wert!. Einheitentabelle (Einheiten und Basen 
+außerhalb der hier aufgeführten Bereiche führen zu einem Fehler und sind mit .ErrCode() 
+abrufbar; <i>SI</i> bedeutet, dass es sich dabei um die internationale 
+Standardeinheit handelt):</font></p>
+<!--mstheme--></font>
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" width="1047" bordercolorlight="#666666" bordercolordark="#666666">
+  <tr>
+    <td width="73" align="center"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Nummer</font></b><!--mstheme--></font></td>
+    <td width="175" align="center"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Basis</font></b><!--mstheme--></font></td>
+    <td width="88" align="center"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Nummer</font></b><!--mstheme--></font></td>
+    <td width="455" align="center"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Einheiten</font></b><!--mstheme--></font></td>
+    <td width="251" align="center"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Kürzel</font></b><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Temperatur</font><!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kelvin</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">K <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Grad Celsius</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">°C</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Grad Fahrenheit</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">°F</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Grad Rankine</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">°Ra</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">4</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Grad Newton</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">°N</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">5</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Grad Réaumur</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">°Ré</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">6</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Grad Rømer</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">°Rø</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">7</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Grad Delisle</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">°De</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Druck</font><!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Pascal</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Pa <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Bar</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">bar</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Technische Atmosphäre</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">at</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Physikalische Atmosphäre</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">atm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">4</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Torr</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">torr</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">5</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Millimeter Quecksilbersäule</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">mmHg</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">6</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Psi</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">psi</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">7</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Meter Wassersäule</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">mWS</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Längenmaße</font><!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Meter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">m <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kilometer</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">km</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Hektometer</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">hm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Dekameter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Dm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">4</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Dezimeter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">dm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">5</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Zentimeter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">cm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">6</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Millimeter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">mm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">7</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Mikrometer</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">µm (auch um)</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">8</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Nanometer</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">nm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">9</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Picometer</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">pm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">10</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Femtometer</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">fm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">11</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Attometer</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">am</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">12</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Linie</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">13</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Zoll</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">in (Inch)</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">14</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Fuß</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">ft (Feet)</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">15</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Klafter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">16</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Seemeile</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">sm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">17</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Landmeile</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">m (nicht mit Meter verwechseln!)</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">18</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Werst</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">19</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Sun</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">sun</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">20</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Astronomische Einheit</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">AE (auch AU)</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">21</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Lichtjahr</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">ly (auch Lj oder lyr)</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">22</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Parallaxensekunde (Parsec)</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">pc</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">23</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Ångström</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Å</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">24</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Punkt</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">p</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">25</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Stich</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">26</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Preußische Rute</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">27</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Sächsische Rute</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">28</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Leuge</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">29</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">International Yard</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">yd</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">30</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Survey Yard</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">31</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Statute mile</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">32</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Chain</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">33</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Furlong</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">34</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Rod</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">35</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Link</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3</font><!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Energie</font><!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Joule</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">J <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Erg</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">erg</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kalorie</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">cal</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">4</font><!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Geschwindigkeit</font><!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kilometer pro Stunde</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">km/h <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Miles per hour</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">mph</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Meter pro Sekunde</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">m/s <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Knoten</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">kn</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">5</font><!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Leistung</font><!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Watt</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">W <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Pferdestärke (DIN-PS)</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">PS</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kilowatt</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">kW</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">brake horsepower</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">bhp</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">6</font><!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Fläche</font><!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Quadratmeter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">m² (auch qm) <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Quadratkilometer</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">km² (auch qkm)</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Quadratzentimeter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">cm² (auch qcm)</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Quadratmillimeter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">mm² (auch qmm)</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">4</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Ar</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">a</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">5</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Hektar</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">ha</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">6</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Barn</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">b</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">7</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Acre</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">a.</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">8</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Morgen (Standard von 1869)</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">9</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Rai</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">10</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Quadratmeile</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">11</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Quadratzoll</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">in²</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">12</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">neugriechisches Stremma (auch 
+    königliches Stremma)</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">13</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Moreotisches Stremma</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">7</font><!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Zeit</font><!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Sekunde</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">s (auch sec, sec.) <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Minute</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">m (auch min, min.) <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Stunde</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">h <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Tag</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">d <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">8</font><!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Gewicht</font><!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Gramm</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">g <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kilogramm</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">kg</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Tonne</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">t</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Karat</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kt</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">4</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Unze</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">oz</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">5</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Neulot</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">6</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Zentner</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">ztr</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">7</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Doppelzentner (auch Quintal)</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">dz</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">8</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Schiffzentner</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">9</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Schiffpfund</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">10</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Lispfund</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">11</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Apothekerpfund</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">12</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Pfund-Schwehr</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">13</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Schiff-Pfund</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">14</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Ließ-Pfund</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">9</font><!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Volumen</font><!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kubikmeter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">m³ <i>(SI)</i></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Festmeter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">fm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Raummeter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">rm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kubikzoll (cubic inch)</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">ci</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">4</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kubikfuß (cubic foot)</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">cf</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">5</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kubikdezimeter, Liter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">dm³, l</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">6</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kubikzentimeter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">cm³, ccm</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">7</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Kubikmillimeter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">mm³</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">8</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Barrel</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">9</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Gallone (US)</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">gal</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">10</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Pint (US)</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">11</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Pfiff</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">12</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Krügerl</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">13</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Neuscheffel</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">14</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Tonne</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">15</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Stof</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">16</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Fass, Gebinde</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">17</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Zuber</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">18</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Imi</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">19</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Hellaichmaß</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">20</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Eimer</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">21</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Fuder</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">22</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Anker</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">23</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Ohm (auch Ohme, Ahm, Aam, Saum, 
+    Sauma, Soma, Sohm)</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">24</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Oxhoft</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">25</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Stübchen</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">?</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">26</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Registertonne</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">RT (reg tn)</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">27</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Imperial gallon</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">gal</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">28</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">bushel (GB)</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">bu</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">29</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">bushel (US)</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">bu</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">30</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Hektoliter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">hl</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">10</font><!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Zählmaße</font><!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Eins</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Dutzend</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Paar</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Halbstiege, Decher, Dekade</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">4</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Mandel, Malter</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">5</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Bauern-, Große Mandel</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">6</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Band, Bund</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">7</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Zimmer</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">8</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Schock</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">9</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Großschock</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">10</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Wall</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">11</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Großhundert</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">12</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Gros, Groß, Gross</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">13</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Großtausend</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="73"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="175"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+    <td width="88"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">14</font><!--mstheme--></font></td>
+    <td width="455"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Maß</font><!--mstheme--></font></td>
+    <td width="251"><!--mstheme--><font face="arial,helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+</table>
+<!--mstheme--><font face="arial,helvetica">
+<p><font face="Trebuchet MS"><font color="#00FFFF">.CPUSpeed(n&amp;) </font>- 
+ermittelt die Taktfrequenz des Prozessors (oder mehrerer Prozessoren, bei 
+mehreren Kernen den Takt jedes Kerns) in MHz. Ist n&amp;=0 wird die Taktrate 
+gemessen, ist n&amp;=1 wird der nominale Wert ermittelt</font></p>
+<p><font face="Trebuchet MS"><font color="#00FFFF">.Benchmark(n&amp;) </font>- 
+Führt einen Benchmarktest durch. Dadurch kann bestimmt werden, wie schnell der 
+Computer Berechnungen ausführen kann. n&amp; gibt die Art des Tests an (weitere 
+folgen noch):<br>
+n&amp;=0 -&gt; Parsertest<br>
+<b>Achtung: </b>Die Tests werden von mir weiterentwickelt, deshalb sind die 
+Testergebnisse unter Umständen zwischen den Parcival-Versionen nicht miteinander kompatibel!</font></p>
+<p><font face="Trebuchet MS"><b>ACHTUNG: </b>Die Werte in .Time&amp;, .Iterations&amp;, .Amid!, .Hmid!, .Gmid!, 
+.PolyCount&amp; und das Ergebnis von .Parse(...) sind nicht 
+korrekt, wenn ein Fehler erfolgte! (siehe .Error% bzw. .ErrCode()) </font> </p>
+<p>&nbsp;</p>
+<p><b><u><font size="5" face="Trebuchet MS"><a name="2"></a>2. Struktur eines Terms</font></u></b></p>
+<p class="MsoNormal"><span style="font-family: Trebuchet MS">Ein Term wird 
+durch folgende Elemente aufgebaut:</span></p>
+<!--mstheme--></font><!--msthemelist--><table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Zahlen</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Konstanten</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Operatoren</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Klammern</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Funktionen</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Variablen 
+    (nur Terme für <i><span style="color: #00FFFF">.Table</span></i>, <i>
+    <span style="color: #00FFFF">.Sum</span></i>, <i>
+    <span style="color: #00FFFF">.Product</span></i>, <i>
+    <span style="color: #00FFFF">.Graph</span></i> und <i>
+    <span style="color: #00FFFF">.Render3D</span></i>)</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--></table>
+<!--mstheme--><font face="arial,helvetica">
+<p class="MsoNormal"><span style="font-family: Trebuchet MS">Der Term kann 
+ganz normal angegeben werden. Folgende Regeln müssen jedoch beachtet und 
+Vereinfachungen können angewendet werden:</span></p>
+<!--mstheme--></font><!--msthemelist--><table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Da Variablen 
+    zum Parsen als Zahlen übergeben werden müssen Operatoren vor und nach 
+    Variablen stets gesetzt werden, da sonst unsinnige Kettenzahlen entstehen 
+    (Ausnahme „*“)</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Zahlen mit 
+    -1&lt;x&lt;1;x&#8800;0 benötigen keine führende Null</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Als Komma 
+    kann entweder „,“ oder „.“ Angegeben werden (siehe auch <a href="#7">Handler</a>)</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">
+    Tausendertrennzeichen sind weder erlaubt noch nötig</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Das „*“ 
+    (Multiplikation) kann vor geöffneten Klammern sowie vor und nach Konstanten, 
+    Variablen und Funktionen weggelassen werden (soweit das die Mathematik 
+    zulässt)</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Groß-, 
+    Kleinschreibung oder ein Mischmasch von beidem ist egal</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Der 
+    Übersichtlichkeit wegen können Klammern mit „()“, „[]“, „{}“ oder „&lt;&gt;“ 
+    angegeben werden</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Klammern am 
+    Ende des Terms müssen nicht geschlossen werden</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Der Term kann 
+    an jeder Stelle Leerzeichen enthalten, sie werden rausgefiltert</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Die 
+    Berechnung durch Operatoren erfolgt nach folgender Logik bzw. Reihenfolge:<br>
+    - Postfixe („°“, „!“, „²“, „³“ von links nach rechts)<br>
+    - Potenzen („^“)<br>
+    - Multiplikationen, Divisionen, Integer-Divisionen („*“, „/“, „\“)<br>
+    - Additionen, Subtraktionen („+“„-“)<br>
+    - Logische Operatoren („&amp;“„|“)<br>
+    - Vergleichsoperatoren („&lt;“, „&gt;“, „=“)</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Gleichwertige 
+    Operatoren werden  von links nach rechts abgearbeitet</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Um den 
+    Negativwert eines Wertes zu ermitteln reicht ein „-„ vor einer Klammer nicht 
+    aus; bitte mit -1 multiplizieren oder die Funktion „Neg(x)“ nutzen</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">bei 
+    trigonometrischen Funktionen wird der Winkel im Bogenmaß erwartet 
+    (Umwandlung aus Dezimalgrad mit „°“ oder „DegToRad(x)“ möglich!)</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal">
+    <span style="font-size: 12.0pt; font-family: Trebuchet MS">jede Zahl hat 
+    eine Rechengenauigkeit von maximal 20 Nachkommastellen</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--><tr>
+		<!--msthemelist--><td valign="baseline" width="42">
+		<img src="zerbul1a.gif" width="15" height="15" hspace="13" alt="Aufzählung"></td>
+		<td valign="top" width="100%"><!--mstheme--><font face="arial,helvetica">
+    <p class="MsoNormal"><span style="font-family: Trebuchet MS">Der 
+    Zahlenbereich ist beschränkt auf </span>
+    <font face="Trebuchet MS">
+    <span style="font-size: 12.0pt; ">±(</span></font><span style="font-size: 12.0pt; font-family: Trebuchet MS">3.6x10<sup>-4951</sup>..1.1x10<sup>4932</sup>)</span><!--mstheme--></font><!--msthemelist--></td>
+	</tr>
+	<!--msthemelist--></table>
+<!--mstheme--><font face="arial,helvetica">
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><b><u><font size="5" face="Trebuchet MS"><a name="3"></a>3. Operatoren</font></u></b></p>
+<p class="MsoNormal"><font face="Trebuchet MS">Folgende Operatoren können verwendet werden:<br>
+<br>
+<b>!</b> – am Ende einer Zahl bildet die Fakultät dieser<br>
+Beispiel: 5! – ergibt 120 (5*4*3*2*1)<br>
+<br>
+<b>°</b> - am Ende einer Zahl wandelt diese von Dezimalgrad in Bogenmaß um<br>
+Beispiel: 180° - ergibt etwa 3.14159264358979323<br>
+<br>
+<b>²</b> - am Ende einer Zahl bildet das Quadrat der Zahl<br>
+Beispiel: 4² - ergibt 16<br>
+<br>
+<b>³</b> - am Ende einer Zahl die dritte Potenz einer Zahl<br>
+Beispiel: 4³ - ergibt 64<br>
+<br>
+<b>^</b> - berechnet die Potenz zweier Zahlen<br>
+Beispiel: 12^2 – ergibt 144 (12 hoch 2, also 12*12)<br>
+<br>
+<b>*</b> - multipliziert zwei Zahlen<br>
+Beispiel: 12*2 – ergibt 24 (12 mal 2, also 12+12)<br>
+<br>
+<b>/</b> - dividiert zwei Zahlen (Division durch 0 ist nicht definiert!)<br>
+Beispiel: 12/2 – ergibt 6 (12 durch 2)<br>
+<br>
+<b>\ </b>- dividiert zwei Zahlen und schneidet die Nachkommastellen ab<br>
+Beispiel: 12\5 – ergibt 2 (12 durch 5 ergibt 2,4; ohne Nachkommastellen 2)<br>
+<br>
+<b>+</b> - addiert zwei Zahlen<br>
+Beispiel: 12+2 – ergibt 14 (12 plus 2)<br>
+<br>
+<b>-</b> - subtrahiert zwei Zahlen<br>
+Beispiel: 12-2 – ergibt 10 (12 minus 2)</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>&amp;</b> - Verknüpft zwei Zahlen 
+mit einem binären Und<br>
+Beispiel: 12-2 – ergibt 0 (12&amp;2)</font></p>
+<p class="MsoNormal"><b><font face="Trebuchet MS">|</font></b><font face="Trebuchet MS"> 
+- Verknüpft zwei Zahlen mit einem binären Oder<br>
+Beispiel: 12-2 – ergibt 14 (12|2)</font></p>
+<p class="MsoNormal"><b><font face="Trebuchet MS">&lt;</font></b><font face="Trebuchet MS"> 
+- Vergleicht zwei Zahlen ob die erste Zahl kleiner ist<br>
+Beispiel: 12&lt;2 – ergibt 0 (12&gt;2)</font></p>
+<p class="MsoNormal"><b><font face="Trebuchet MS">&gt;</font></b><font face="Trebuchet MS"> 
+- Vergleicht zwei Zahlen ob die erste Zahl größer ist<br>
+Beispiel: 12&gt;2 – ergibt 1 (12&gt;2)</font></p>
+<p class="MsoNormal"><b><font face="Trebuchet MS">=</font></b><font face="Trebuchet MS"> 
+- Vergleicht zwei Zahlen auf Gleichheit<br>
+Beispiel: 12=2 – ergibt  0 (12&#8800;2)</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS">Die Berechnung folgt der allgemeinen mathematischen Logik!<br>
+Beispiele:<br>
+12+3*4 ergibt 24<br>
+(12+3)*4 ergibt 60<br>
+2+2^3 ergibt 10<br>
+2^(3+2) ergibt 32</font></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><b><u><font size="5" face="Trebuchet MS"><a name="4"></a>4. Funktionen</font></u></b></p>
+<p class="MsoNormal"><font face="Trebuchet MS">Folgende Funktionen werden erkannt:<br>
+<br>
+<b>Abs(x)<br>
+</b>Berechnet den Betrag von x (Wert ohne Vorzeichen)<br>
+<br>
+<b>Abundant(x)<br>
+</b>Ermittelt ob eine Zahl abundant ist.<br>
+<i>Wikipedia: Eine natürliche Zahl heißt abundant, wenn ihre echte Teilersumme 
+(die Summe aller Teiler ohne die Zahl selbst) größer ist als die Zahl selbst. 
+[…] Die kleinste abundante Zahl ist 12 (1+2+3+4+6&gt;12), die kleinste ungerade abundante Zahl ist 945.</i><br>
+<br>
+<b>And(x;y)<br>
+</b>Führt eine logische UND-Operation (siehe Handler zum Umstellen auf 
+binäres UND) mit x und y durch. Das Und entspricht einer Konjunktion.<br>
+<br>
+<b><a name="Roem"></a>ArabToRoem(x)<br>
+</b>Wandelt die Zahl x in eine römische Zahl um. Nach dieser Funktion darf keine 
+weitere Funktion aufgerufen werden! Der von mir verwendete und in Delphi 
+übersetzte XProfan-Quellcode für diese Funktion 
+wurde entwickelt von <b>Michael Wodrich</b>!<br>
+<br>
+<b>ArcCos(x)<br>
+</b>Berechnet den ArcusCosinus eines Wertes<br>
+<br>
+<b>ArcCosh(x)<br>
+</b>Berechnet den ArcusCosinus hyperbolicus eines Wertes<br>
+<br>
+<b>ArcCosec(x)<br>
+</b>Berechnet den ArcusCosekans eines Wertes<br>
+<br>
+<b>ArcCosech(x)<br>
+</b>Berechnet den ArcusCosekans hyperbolicus eines Wertes<br>
+<br>
+<b>ArcCot(x)<br>
+</b>Berechnet den ArcusCotangens eines Wertes<br>
+<br>
+<b>ArcCoth(x)<br>
+</b>Berechnet den ArcusCotangens hyperbolicus eines Wertes<br>
+<br>
+<b>ArcSec(x)<br>
+</b>Berechnet den ArcusSekans eines Wertes<br>
+<br>
+<b>ArcSech(x)<br>
+</b>Berechnet den ArcusSekans hyperbolicus eines Wertes<br>
+<br>
+<b>ArcSin(x)<br>
+</b>Berechnet den ArcusSinus eines Wertes<br>
+<br>
+<b>ArcSinh(x)<br>
+</b>Berechnet den ArcusSinus hyperbolicus eines Wertes<br>
+<br>
+<b>ArcTan(x)<br>
+</b>Berechnet den ArcusTangens eines Wertes (Winkel im Bogenmaß aus dem Tangens 
+eines Winkels)<br>
+<br>
+<b>ArcTanh(x)<br>
+</b>Berechnet den ArcusTangens hyperbolicus eines Wertes<br>
+<br>
+<b>BAnd(x;y)<br>
+</b>Führt eine binäre And-Operation mit x und y durch. Das Und entspricht einer Konjunktion.</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>BNAnd(x;y)<br>
+</b>Führt eine binäre NAnd-Operation mit x und y durch.</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>BNOr(x;y)<br>
+</b>Führt eine binäre NOr-Operation mit x und y durch.</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>BNot(xy)<br>
+</b>Führt eine binäre Not-Operation mit x durch.</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>BNXOr(x;y)<br>
+</b>Führt eine binäre NXOr-Operation mit x und y durch.</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>BOr(x;y)<br>
+</b>Führt eine binäre Or-Operation mit x und y durch. Das Oder entspricht einer 
+Disjunktion.</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>BXOr(x;y)<br>
+</b>Führt eine binäre XOr-Operation mit x und y durch. Das XOr entspricht einer 
+Antivalenz.</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS">
+<b><a name="Base"></a>Base(x;y)<br>
+</b>Rechnet x in ein Zahlensystem der Basis y um. Hierbei kann y Werte zwischen 
+2 und 36 annehmen. In Ermangelung an einstelligen Zahlzeichen, wird nach der 9 
+das ganze Alphabet verwendet. Nach dieser Funktion darf keine weitere Funktion 
+aufgerufen werden!<br>
+<br>
+<b>Befreundet(x;y)<br>
+</b>Gibt an, ob die Zahlen x und y befreundet sind.<br>
+<i>Wikipedia: Zwei verschiedene natürliche Zahlen, bei denen jeweils eine Zahl 
+gleich der Summe der echten Teiler der anderen Zahl ist, bilden ein Paar 
+befreundeter Zahlen. Oft bezeichnet man die Summe der echten Teiler von x mit 
+&#963;*x. Damit lässt sich die Definition auch so formulieren:<br>
+Zwei verschiedene natürliche Zahlen a und b bilden ein Paar befreundeter Zahlen, 
+wenn gilt: &#963;*a=b und &#963;*b=a.<br>
+Das kleinste befreundete Zahlenpaar wird von den Zahlen 220 und 284 gebildet. 
+Man rechnet leicht nach, dass die beiden Zahlen der Definition genügen:<br>
+Die Summe der echten Teiler von 220 ergibt 1+2+4+5+10+11+20+22+44+55+110=284 und 
+die Summe der echten Teiler von 284 ergibt 1+2+4+71+142=220.</i><br>
+<br>
+<b>Ceil(x)<br>
+</b>Rundet den Wert von x auf<br>
+<br>
+<b>Cos(x)<br>
+</b>Berechnet den Cosinus von x<br>
+<br>
+<b>Cosec(x)<br>
+</b>Berechnet den Cosekans eines Winkels<br>
+<br>
+<b>Cosech(x)<br>
+</b>Berechnet den Cosekans hyperbolicus eines Winkels<br>
+<br>
+<b>Cosh(x)<br>
+</b>Berechnet den Cosinus hyperbolicus von x<br>
+<br>
+<b>Cot(x)<br>
+</b>Berechnet den Cotangens von x<br>
+<br>
+<b>Coth(x)<br>
+</b>Berechnet den Cotangens hyperbolicus von x<br>
+<br>
+<b>CoverSin(x)<br>
+</b>Berechnet den Covered Sinus von x<br>
+<br>
+<b>CoverCosin(x)<br>
+</b>Berechnet den Covered Cosinus von x<br>
+<br>
+<b>Crd(x)<br>
+</b>Berechnet den Chord von x<br>
+<br>
+<b>Defizient(x)<br>
+</b>Ermittelt ob eine Zahl defizient ist.<br>
+<i>Wikipedia: Eine natürliche Zahl heißt defizient, wenn ihre echte Teilersumme 
+(die Summe aller Teiler ohne die Zahl selbst) kleiner ist als die Zahl selbst.<br>
+Beispiel:<br>
+Die Zahl 10 ist defizient, denn 1+2+5=8 &lt; 10. Ebenso sind alle Primzahlen 
+defizient, da ihre Teilersumme immer Eins ist.</i><br>
+<br>
+<b>DegToGra(x)<br>
+</b>Wandelt x von Dezimalgrad in Neugrad (Gon) um<br>
+<br>
+<b>DegToRad(x)<br>
+</b>Wandelt x von Dezimalgrad in Bogenmaß um (diese Funktion entspricht dem Term “x°“)<br>
+<br>
+<b>Digit(x;y)<br>
+</b>Ermittelt eine Stelle aus einer Zahl</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS">
+<b>Digits(x)<br>
+</b>Gibt die Anzahl der Stellen von x zurück (alle Nachkommastellen von x werden 
+abgeschnitten!)<br>
+<br>
+<b>DivMod(x;y)<br>
+</b>Gibt den Wert einer Integerdivision von x durch y&nbsp; und den Rest an 
+(getrennt durch &quot;;&quot;)</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS">
+<b>Equ(x;y)<br>
+</b>Ermittelt ob x und y gleich groß sind</font></p>
+<p class="MsoNormal" align="left">
+<font face="Trebuchet MS">
+<b>Even(x)<br>
+</b>Ermittelt ob eine Zahl gerade ist<br>
+<br>
+<b>Exp(x)<br>
+</b>Gibt e (Eulersche Zahl) hoch x aus<br>
+<br>
+<b>Floor(x)<br>
+</b>Rundet den Wert von x ab<br>
+<br>
+<b>Frac(x)</b><br>
+Gibt den Fraction Part von x zurück, also die Nachkommastellen<br>
+<br>
+<b>FracPC(x;y)<br>
+</b>Errechnet aus der Zahl einen Bruch. Y gibt die Genauigkeit an. Nach dieser 
+Funktion darf keine weitere Funktion aufgerufen werden! (diese Funktion ist noch 
+nicht zu 100% ausgereift, Copyright by Ceph)<br>
+<br>
+<b>GGT(x;y)<br>
+</b>Gibt den größten gemeinsamen Teiler von x und y an. <b>Copyright by [::Mr Baque]</b><br>
+<br>
+<b>GraToDeg(x)<br>
+</b>Wandelt x von Neugrad (Gon) in Dezimalgrad um<br>
+<br>
+<b>GraToRad(x)<br>
+</b>Wandelt x von Neugrad (Gon) in Bogenmaß um<br>
+<br>
+<b>GT(x;y)<br>
+</b>Ermittelt ob x größer als y ist</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>GTE(x;y)<br>
+</b>Ermittelt ob x größer oder gleich y ist</font></p>
+<p class="MsoNormal">
+<font face="Trebuchet MS">
+<b>HaCoverCosin(x)<br>
+</b>Berechnet den halben covered Cosinus von x<br>
+<br>
+<b>HaCoverSin(x)<br>
+</b>Berechnet den halben covered Sinus von x<br>
+<br>
+</font><b><font face="Trebuchet MS">HaverCosin</font></b><font face="Trebuchet MS"><b>(x)<br>
+</b>Berechnet den halben Cosinus versus von x<br>
+<br>
+<b>HaverSin(x)<br>
+</b>Berechnet den halben Sinus versus von x<br>
+<br>
+<b>Ident(x;y)<br>
+</b>Ermittelt aus x einen Binärwert. Für y gilt:<br>
+y=0 -&gt; Das Ergebnis ist nur 0, wenn x=0, ansonsten ist das Ergebnis 1.<br>
+y=1 -&gt; Das Ergebnis ist nur 1, wenn x=1, ansonsten ist das Ergebnis 0.<br>
+Andere Werte darf y nicht annehmen, ansonsten wird ein Fehler ausgegeben.</font></p>
+<p class="MsoNormal">
+<font face="Trebuchet MS"><b>Input(x;y)<br>
+</b>Mit dieser Funktion kann ein nichtmathematischer Wert als Eingabe angegeben 
+werden. Folgende Parameter sind dabei gültig (Der entsprechende Wert/String wird 
+in y angegeben und wird von x durch ein Semikolon getrennt):</font></p>
+<!--mstheme--></font>
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" width="100%" bordercolorlight="#666666" bordercolordark="#666666">
+  <tr>
+    <td width="10%"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Schlüsselwort:</font></b><!--mstheme--></font></td>
+    <td width="90%"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Umkehrfunktion zu:</font></b><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="10%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2..36</font><!--mstheme--></font></td>
+    <td width="90%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS"><a href="#Base">Base</a></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="10%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Roem</font><!--mstheme--></font></td>
+    <td width="90%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS"><a href="#Roem">ArabToRoem bzw. 
+    Roem</a></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="10%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Time</font><!--mstheme--></font></td>
+    <td width="90%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS"><a href="#Time">Time</a></font><!--mstheme--></font></td>
+  </tr>
+</table>
+<!--mstheme--><font face="arial,helvetica">
+<p class="MsoNormal">
+<font face="Trebuchet MS">Der für Roem verwendete Quelltext ist ein von mir nach 
+Delphi übersetzter Quelltext, der ursprünglich von <b>Micheal Wodrich</b> in 
+XProfan geschrieben wurde.</font></p>
+<p class="MsoNormal">
+<font face="Trebuchet MS">
+<b>Int(x)<br>
+</b>Bildet das Integer von x (Nachkommastellen werden abgeschnitten)<br>
+<br>
+<b>KgV(x;y)<br>
+</b>Gibt das kleinste gemeinsame Vielfache von x und y an. <b>Copyright by [::Mr 
+Baque]</b><br>
+<br>
+<b>KombBack(x;y)<br>
+</b>Bildet die Kombination mit Wiederholung, mit Zurücklegen.<br>
+Wikipedia: Eine Anwendung davon ist das Gummibärchen-Orakel. Dort wählt man k=5 
+Bärchen von n=5 Elementen aus (5 Farben). Demnach gibt es 
+(5+5-1)!/(5!•(5-1)!)=9!/(5!•4!)=126 verschiedene Kombinationen. Die Kombination 
+mit Zurücklegen wird auch „Repetition“ genannt.<br>
+<br>
+<b>KombNoBack(x;y)<br>
+</b>Bildet die Kombination mit Wiederholung (x über y), ohne Zurücklegen.<br>
+<i>Wikipedia: Auswahlprobleme ohne Zurücklegen können als Anordnungsprobleme 
+aufgefasst werden. Die Zahl der möglichen Auswahlen kann ermittelt werden, indem 
+die Zahl der Anordnungen ermittelt wird, bei denen die ausgewählten Objekte auf 
+ausgezeichneten Plätzen angeordnet sind. Dieses Auswahlproblem kann auf die 
+Ermittlung aller Anordnungen zurückgeführt werden, bei denen die ausgewählten 
+Objekte auf den ersten Plätzen landen, wobei es weder bei den ausgewählten noch 
+bei den nicht ausgewählten Objekten auf die Reihenfolge ankommt. Wenn aus n 
+Objekten k ohne Zurücklegen und ohne Beachtung der Reihenfolge ausgewählt werden 
+sollen, so gibt es jeweils die Klasse der k ausgewählten Objekte und die Klasse 
+der (n-k) nicht ausgewählten Objekte, in der es auf die Reihenfolge nicht 
+ankommt. Dabei sind k und n-k in der Formel austauschbar, da man die n Objekte 
+in zwei Teilmengen teilt, welche davon die interessierende ist, ist für die 
+Anzahl der möglichen Aufteilungen nicht entscheidend. Demzufolge gibt es 
+mögliche derartige Auswahlen.<br>
+Dieser häufig benötigte Ausdruck wird als Binomialkoeffizient bezeichnet.<br>
+Wenn aus 49 Objekten nun 6 ohne Zurücklegen und ohne Beachtung der Reihenfolge 
+ausgewählt werden sollen, wie dies zum Beispiel bei der Ziehung der Lottozahlen 
+der Fall ist, so gibt es 13.983.816 mögliche Auswahlen.<br>
+</i><br>
+<b>Lg(x)<br>
+</b>Berechnet den Briggschen Logarithmus, also den Logarithmus von x zur Basis 
+10<br>
+<br>
+<b>LightAbundant(x)<br>
+</b>Ermittelt ob eine Zahl „leicht abundant“ ist. Die Summe ihrer Teiler von x 
+ist x+1. Bis jetzt konnte noch keine leicht abundante Zahl nachgewiesen werden.<br>
+<br>
+<b>LightDefizient(x)<br>
+</b>Ermittelt ob eine Zahl „leicht defizient“ ist. Die Summe ihrer Teiler von x 
+ist x-1. Im Gegensatz zu den „leicht abundanten“ Zahlen konnten die „leicht 
+defizienten“ Zahle bereits nachgewiesen werden.<br>
+<br>
+<b>Ln(x)<br>
+</b>Berechnet den Neperschen Logarithmus, also den Logarithmus von x zur Basis e<br>
+<br>
+<b>Log(x;y)<br>
+</b>Errechnet den Logarithmus von x zur Basis y<br>
+<br>
+<b>LT(x;y)<br>
+</b>Ermittelt ob x kleiner als y ist</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>LTE(x;y)<br>
+</b>Ermittelt ob x kleiner oder gleich y ist</font></p>
+<p class="MsoNormal">
+<font face="Trebuchet MS">
+<b>Lz(x)<br>
+</b>Berechnet den Logarithmus von x zur Basis 2<br>
+<br>
+<b>Max(x;y)<br>
+</b>Gibt den größeren der beiden Werte zurück<br>
+<br>
+<b>Min(x;y)<br>
+</b>Gibt den kleineren der beiden Werte zurück<br>
+<br>
+<b>Mod(x;y)<br>
+</b>Gibt den Modulowert von x durch y zurück. Der Modulowert ist der Rest einer 
+Integer-Division<br>
+<br>
+<b>NAnd(x;y)<br>
+</b>Führt eine logische NICHTUND-Operation (siehe Handler zum Umstellen 
+auf binäres NICHTUND) mit x und y durch<br>
+<br>
+<b>Neg(x)</b><br>
+Multipliziert x mit -1</font></p>
+<p class="MsoNormal">
+<font face="Trebuchet MS">
+<b>Neq(x;y)<br>
+</b>Ermittelt ob x ungleich y ist</font></p>
+<p class="MsoNormal">
+<font face="Trebuchet MS">
+<b>NOr(x;y)<br>
+</b>Führt eine logische NICHTODER-Operation (siehe Handler zum Umstellen 
+auf binäres NICHTODER) mit x und y durch<br>
+<br>
+<b>Not(x)<br>
+</b>Führt eine logische NICHT-Operation (siehe Handler zum Umstellen auf 
+binäres NICHT) mit x  durch. Das Nicht entspricht einer Negation.<br>
+<br>
+<b>NXOr(x;y)<br>
+</b>Führt eine logische NICHTEXKLUSIVODER-Operation (siehe Handler zum 
+Umstellen auf binäres NICHTEXKLUSIVODER) mit x und y durch. Das NXOr entspricht 
+einer Äquivalenz.</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Odd(x)<br>
+</b>Ermittelt ob eine Zahl ungerade ist<br>
+<br>
+<b>Or(x;y)<br>
+</b>Führt eine logische ODER-Operation (siehe Handler zum Umstellen auf 
+binäres ODER) mit x und y durch. Das Oder entspricht einer Disjunktion.<br>
+<br>
+<b>Perm(x)<br>
+</b>Ermittelt die Permutation von x.<br>
+<i>Wikipedia: Permutation (=Zahl der Reihenfolgen): &quot;Jede mögliche Anordnung von 
+n Elementen, in der alle Elemente verwendet werden, heißt Permutation dieser 
+Elemente.&quot; Als einführendes Beispiel mag die Zahl der Anordnungen von sechs 
+unterscheidbaren Objekten mit Beachtung der Reihenfolge dienen. Offensichtlich 
+kann jedes der Objekte &quot;auf den ersten Platz gelangen&quot;, es gibt also sechs 
+Möglichkeiten, den ersten Platz zu besetzen. Wenn der erste Platz besetzt ist, 
+bleiben noch fünf Kandidaten für den zweiten Platz, ist auch dieser besetzt, nur 
+noch vier Kandidaten für den dritten Platz, und so fort. Für den vorletzten 
+Platz bleiben schließlich nur noch zwei Objekte übrig, und der letzte Platz muss 
+mit dem &quot;übrig gebliebenen&quot; Objekt besetzt werden.<br>
+Es gibt also 6•5•4•3•2•1 oder 6! = 720 Möglichkeiten, sechs unterscheidbare 
+Objekte anzuordnen. Das Ausrufezeichen steht für &quot;Fakultät&quot; und wird auch so 
+gelesen, also &quot;Sechs Fakultät&quot;. Allgemein: Anzahl der Permutationen von n 
+verschiedenen Elementen: n!<br>
+</i><br>
+<b>Pred(x)<br>
+</b>Gibt den Vorgänger von x zurück<br>
+<br>
+<b>Prim(x)<br>
+</b>Ermittelt ob x eine Primzahl ist. Sehr effektiver Algorithmus!<br>
+<br>
+<b>Quasibefreundet(x;y)<br>
+</b>Ermittelt ob zwei Zahlen quasibefreundet sind.<br>
+<i>Wikipedia: Neben den befreundeten Zahlen gibt es noch eine Klasse von Zahlen, 
+die den befreundeten Zahlen ähnlich ist: die quasibefreundeten Zahlen. Sie 
+unterscheiden sich von den befreundeten Zahlen insofern, als bei ihren Teilern 
+die 1 nicht berücksichtigt wird.<br>
+Beispiel: 48 besitzt die Teiler 1, 2, 3, 4, 6, 8, 12, 16 und 24. Die Zahl 75 
+besitzt die Teiler 1, 3, 5, 15 und 25. Die Summe der Teiler von 48 (ohne 1) ist 
+2+3+4+6+8+12+16+24=75, und die Summe der Teiler von 75 (ebenfalls ohne 1) ist 
+3+5+1</i>5+25=48.<br>
+<br>
+<b>Quersum(x)</b><br>
+Erzeugt die Quersumme der Zahl x</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Pol(x;y)<br>
+</b>Errechnet die Länge eines Vektors (x;y)</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS">
+<b>RadToDeg(x)<br>
+</b>Wandelt x von Bogenmaß in Dezimalgrad um<br>
+<br>
+<b>RadToGra(x)<br>
+</b>Wandelt x von Bogenmaß in Neugrad (Gon) um<br>
+<br>
+<b>Range(x)<br>
+</b>Ermittelt in welchem Zahlenbereich sich die Zahl x ansiedelt, dabei werden 
+alle gültigen Zahlenbereiche ausgegeben (zuerst allgemeine, dann immer 
+speziellere). Beispiele:</font></p>
+<!--mstheme--></font>
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" width="100%" bordercolorlight="#666666" bordercolordark="#666666">
+  <tr>
+    <td width="16%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS"><b>
+    Bereichssymbol</b></font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS"><b>
+    Bezeichnung</b></font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS"><b>
+    Beispiel</b></font><!--mstheme--></font></td>
+    <td width="46%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS"><b>
+    Beschreibung</b></font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="16%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">R</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Reelle 
+    Zahlen</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">-3.5; 
+    3.5; 2; 0; &#960;</font><!--mstheme--></font></td>
+    <td width="46%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Alle 
+    echten Zahlen</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="16%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">R+</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Positive 
+    reelle Zahlen</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3.5; 2; 
+    3&#8532;</font><!--mstheme--></font></td>
+    <td width="46%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Alle 
+    positiven, echten Zahlen</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="16%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">R-</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Negative 
+    reelle Zahlen</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">-3.5; -2; 
+    -3&#8532;</font><!--mstheme--></font></td>
+    <td width="46%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Alle 
+    negativen, echten Zahlen</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="16%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Q</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Rationale 
+    Zahlen</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3.5; -3.5</font><!--mstheme--></font></td>
+    <td width="46%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Alle 
+    Zahlen mit endlich vielen Nachkommastellen</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="16%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Q+</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Positive 
+    rationale Zahlen</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3.5</font><!--mstheme--></font></td>
+    <td width="46%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Alle 
+    positiven Zahlen mit endlich vielen Nachkommastellen</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="16%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Q-</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Negative 
+    rationale Zahlen</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">-3.5</font><!--mstheme--></font></td>
+    <td width="46%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Alle 
+    negativen Zahlen mit endlich vielen Nachkommastellen</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="16%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Z</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Ganze 
+    Zahlen</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3; -2; 0; 
+    -425</font><!--mstheme--></font></td>
+    <td width="46%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Alle 
+    Zahlen ohne Nachkommastellen</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="16%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Z+</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Positive 
+    ganze Zahlen</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3; 2; 425</font><!--mstheme--></font></td>
+    <td width="46%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Alle 
+    positiven Zahlen ohne Nachkommastellen</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="16%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Z-</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Negative 
+    ganze Zahlen</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">-3; -2; 
+    -425</font><!--mstheme--></font></td>
+    <td width="46%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Alle 
+    negativen Zahlen ohne Nachkommastellen</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="16%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">N</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Natürliche Zahlen</font><!--mstheme--></font></td>
+    <td width="19%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3; 2; 425</font><!--mstheme--></font></td>
+    <td width="46%"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Alle 
+    positiven, ganzen Zahlen (=Z+)</font><!--mstheme--></font></td>
+  </tr>
+</table>
+<!--mstheme--><font face="arial,helvetica">
+<p class="MsoNormal"><font face="Trebuchet MS">
+<b>Reziproke(x)<br>
+</b>Bildet das Reziproke von x (den Kehrwert, also 1/x)<br>
+<br>
+<b>Rnd(x)<br>
+</b>Bildet eine Zufallszahl zwischen 0 und x<br>
+<br>
+<b>Roem(x)<br>
+</b>Siehe <a href="#Roem">ArabToRoem</a></font></p>
+<p class="MsoNormal"><font face="Trebuchet MS">
+<b>Root(x;y)<br>
+</b>Berechnet die y-te Wurzel von x<br>
+<br>
+<b>Round(x;y)<br>
+</b>Rundet x auf y Nachkommastellen. Ist y negativ, wird auf 10er, 100er, 1000er 
+usw. gerundet<br>
+<br>
+<b>Sci(x;y)<br>
+</b>Die Funktion gibt zu einem Wert Vorzeichen aus (z.B.: 0.5 wird zu 500m; 
+500 Milli). x ist der Wert und y gibt die Nachkommastellen an. Es gibt folgende Vorzeichen:<br>
+k (Kilo), M (Mega), G (Giga), T (Tera), P (Peta), E (Exa), Z (Zetta) und Y (Yotta) 
+sowie<br>
+m (Milli), µ (Mikro), n (Nano), p (Pico), f (Femto), a (Atto), z (Zepto), y (Yocto).<br>
+Werte die kleiner bzw. größer sind, als die letzten angegebenen Vorzeichen 
+bekommen trotzdem y bzw. Y und sind dann entsprechend klein/groß.</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS">
+<b>Sec(x)<br>
+</b>Berechnet den Sekans eines Winkels<br>
+<br>
+<b>Sech(x)<br>
+</b>Berechnet den Sekans hyperbolicus eines Winkels<br>
+<br>
+<b>ShortenDeg(x)<br>
+</b>Kürzt den Winkel x (in Dezimalgrad) ein, d.h. bei Winkeln größer oder gleich 
+360 Grad werden volle Kreise abgeschnitten<br>
+<br>
+<b>ShortenGra(x)<br>
+</b>Kürzt den Winkel x (in Neugrad) ein, d.h. bei Winkeln größer oder gleich 400 
+Grad werden volle Kreise abgeschnitten<br>
+<br>
+<b>ShortenRad(x)<br>
+</b>Kürzt den Winkel x (in Bogenmaß) ein, d.h. bei Winkeln größer oder gleich 
+2*&#960; werden volle Kreise abgeschnitten<br>
+<br>
+<b>Sign(x)<br>
+</b>Gibt das Vorzeichen zurück (1 bei x&gt;0; 0 bei x=0; -1 bei x&lt;0)<br>
+<br>
+<b>Sin(x)<br>
+</b>Berechnet den Sinus von x<br>
+<br>
+<b>Sinh(x)<br>
+</b>Berechnet den Sinus hyperbolicus von x<br>
+<br>
+<b>Sqr(x)<br>
+</b>Bildet das Quadrat von x<br>
+<br>
+<b>Sqrt(x)<br>
+</b>Bildet die Quadratwurzel von x<br>
+<br>
+<b>Succ(x)<br>
+</b>Gibt den Nachfolger von x zurück<br>
+<br>
+<b>Tan(x)<br>
+</b>Berechnet den Tangens von x<br>
+<br>
+<b>Tanh(x)<br>
+</b>Berechnet den Tangens hyperbolicus von x<br>
+<br>
+<b>Teiler(x;y)<br>
+</b>Gibt an, ob y ein Teiler von x ist<br>
+<br>
+<b>Thousands(x)</b><br>
+Fügt Tausendertrennzeichen ein</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS">
+<b><a name="Time"></a>Time(x;y)<br>
+</b>Die Funktion Time rechnet einen Dezimalwert in Grad, Minuten, Sekunden (bzw. 
+Stunden, Minuten, Sekunden) um. Dabei stellt der Wert x die Anzahl der Stunden 
+dar. y gibt die Form des Rückgabestrings an (hier für x=3.5):<br>
+0...3h30m00.000s<br>
+1...3h30m00.00s<br>
+2...3h30m00.0s<br>
+3...3h30m00s<br>
+4...3h30m<br>
+Wird zum Wert von y noch 5 addiert, so wird nicht h, m und s angehängt sondern 
+°, ' und &quot;. Alle Werte werden stets abgerundet!</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS">
+<b>VarBack(x;y)<br>
+</b>Bildet die Variation mit Wiederholung, mit Zurücklegen.<br>
+<i>Wikipedia: Wenn aus n Objekten k Objekte mit Zurücklegen und mit Beachtung 
+der Reihenfolge ausgewählt werden sollen, dann kann jedes der n Objekte auf 
+jedem der k Plätze der Auswahl erscheinen, es gibt demzufolge n*k mögliche 
+Auswahlen.<br>
+Wenn also aus 3 Objekten 11-mal mit Zurücklegen gezogen wird, dann sind 311 = 
+177.147 verschiedene Auswahlen möglich. Als Beispiel aus der Genetik mag die 
+Anzahl möglicher 3er Tupel (Codons) bei 4 verschiedenen Nukleotidbasen dienen: 
+43 = 64; die tatsächliche Anzahl kodierter Aminosäuren ist geringer (22 (plus 
+Start- und Stopcodons)), da der genetische Code degeneriert ist.</i><br>
+<br>
+<b>VarNoBack(x;y)<br>
+</b>Bildet die Variation (x über y), ohne Zurücklegen.<br>
+<i>Wikipedia: k Plätze sollen mit jeweils einem aus n Objekten besetzt werden, 
+wobei jedes Objekt maximal einen Platz besetzen darf (also muss k&#8804;n sein). Hier 
+gibt es Möglichkeiten. Dies wird in der Literatur bisweilen auch als 
+dargestellt.</i><br>
+<br>
+<b>VerCosin(x)<br>
+</b>Berechnet den Cosinus versus von x<br>
+<br>
+<b>VerSin(x)<br>
+</b>Berechnet den Sinus versus von x<br>
+<br>
+<b>Vollkommen(x)<br>
+</b>Ermittelt ob x eine vollkommene Zahl. Eine vollkommene Zahl ist mit sich 
+selbst befreundet.<br>
+<i>Wikipedia: Eine natürliche Zahl wird vollkommene Zahl (auch perfekte Zahl 
+oder ideale Zahl) genannt, wenn sie die Summe ihrer positiven echten Teiler 
+(d.h. aller Teiler außer sich selbst) ist. Die kleinsten Beispiele für 
+vollkommene Zahlen sind 6, 28, 496 und 8128:<br>
+Die echten Teiler von 6 sind 1, 2 und 3. Ihre Summe ist 1+2+3=6.<br>
+Für 28 sind die echten Teiler 1, 2, 4, 7 und 14, so dass 1+2+4+7+14=28 ist.<br>
+<br>
+</i><b><i>XOr(x;y)</i><br>
+</b>Führt eine logische EXKLUSIVODER-Operation (siehe Handler zum 
+Umstellen auf binäres EXKLUSIVODER) mit x und y durch. Das exklusive Oder 
+entspricht einer Antivalenz.</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>XQuersum(x)<br>
+</b>Erzeugt die Quersumme von x. Dieser Vorgang wird solange wiederholt, bis das 
+Ergebnis eine einstellige Zahl ist</font></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><u><b><font size="5" face="Trebuchet MS"><a name="5"></a>5. Konstanten/Variablen</font></b></u></p>
+<p class="MsoNormal"><font face="Trebuchet MS">Konstanten können wie Zahlen verwendet werden. Sie werden 
+noch vor der Berechnung des Terms in ihren Wert umgewandelt. Folgende Konstanten 
+sind bereits eingebaut:<br>
+<b>%ez%</b> – e (Eulersche Zahl, e&#8776;2.71828)<br>
+<b>%pi%</b> – Pi (Ludolfsche Zahl, &#960;&#8776;3.14159)<br>
+<b>%phi%</b> – Phi (Verhältnis goldener Schnitt; &#966;&#8776;1.61803)<br>
+<b>%ans%</b> - das letzte Ergebnis<br>
+<b>%if% </b>- Der Geburtstag von iF in der Form &quot;yyyymmdd&quot;</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS">Variablen können in den Funktionen .Graph, .Render3D, 
+.Table, .Sum und .Product verwendet werden. Sie werden bei jedem 
+Parser-Durchlauf durch den Wert ersetzt:<br>
+<b>%x%</b> - 1. Variable in .Sum, .Product, .Graph, .Render3D 
+und .Table<br>
+<b>%y%</b> -  2. Variable in .Render3D</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS">Folgende Variablen können für die 
+Füllfarbenalgorithmen angegeben werden (neben %x% und %y%):<br>
+<b>%z%</b> - Das Ergebnis der Berechnung aus %x% und %y%<br>
+<b>%maxx%</b> - der maximal erreichte X-Wert in dem berechneten Bereich<br>
+<b>%maxy%</b> - der maximal erreichte Y-Wert in dem berechneten Bereich<br>
+<b>%maxz%</b> - der maximal erreichte Z-Wert in dem berechneten Bereich<br>
+<b>%minx% </b>- der minimal erreichte X-Wert in dem berechneten Bereich<br>
+<b>%miny%</b> - der minimal erreichte Y-Wert in dem berechneten Bereich<br>
+<b>%minz%</b> - der minimal erreicht Z-Wert in dem berechneten Bereich<br>
+<b>%maxvx%</b> - der maximale X-Wert des gewählten Views<br>
+<b>%maxvy%</b> - der maximale Y-Wert des gewählten Views<br>
+<b>%maxvz% </b>- der maximale Z-Wert des gewählten Views<br>
+<b>%minvx%</b> - der minimale X-Wert des gewählten Views<br>
+<b>%minvy% </b>- der minimale Y-Wert des gewählten Views<br>
+<b>%minvz%</b> - der minimale Z-Wert des gewählten Views</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b><a name="selbstvar"></a>Selbst 
+definierte Variablen:<br>
+</b>Selbst definierte Variablen können aus Buchstaben, Zahlen und dem 
+Unterstrich bestehen (andere Zeichen werden nicht angemeckert, der Parser könnte 
+aber abstürzen!). Zugewiesen werden Werte per .Set() oder indem vor eine Formel 
+&quot;%var%:=&quot; gesetzt wird (Die &quot;%&quot; können auch weggelassen werden). Selbst 
+definierte Variablen können in jeder Formel angewendet werden!</font></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><u><b><font size="5" face="Trebuchet MS"><a name="6"></a>6. Flags</font></b></u></p>
+<p class="MsoNormal"><font face="Trebuchet MS">Die Funktionen .Graph, .View3D 
+und .View4D verwenden Flags um 
+Anzeigeeinstellungen vorzunehmen. Dabei können die hier angegebenen Konstanten 
+durch einbinden der Parcival.ph benutzt werden. Mehrere Flags werden durch 
+Addieren kombiniert.</font></p>
+<!--mstheme--></font>
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" width="100%" bordercolorlight="#666666" bordercolordark="#666666" height="296">
+  <tr>
+    <td width="12%" valign="top" align="center" height="22"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Konstante</font></b><!--mstheme--></font></td>
+    <td width="7%" valign="top" align="center" height="22"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Hex-Wert</font></b><!--mstheme--></font></td>
+    <td width="64%" valign="top" align="center" height="22"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Bedeutung</font></b><!--mstheme--></font></td>
+    <td width="17%" valign="top" align="center" height="22"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Verwendet 
+    in:</font></b><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="12%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_SolidFill</font><!--mstheme--></font></td>
+    <td width="7%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">$0</font><!--mstheme--></font></td>
+    <td width="64%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Gibt an, 
+    dass die Oberfläche des Graphen mit der angegebenen Farbe gefüllt werden 
+    soll</font><!--mstheme--></font></td>
+    <td width="17%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">.View3D und .View4D</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="12%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_Colors</font><!--mstheme--></font></td>
+    <td width="7%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">$1</font><!--mstheme--></font></td>
+    <td width="64%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Gibt an, 
+    dass die Oberfläche des Graphen mit einem Farbverlauf von blau nach grün 
+    gefüllt werden soll</font><!--mstheme--></font></td>
+    <td width="17%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">.View3D und .View4D</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="12%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_Greyscale</font><!--mstheme--></font></td>
+    <td width="7%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">$2</font><!--mstheme--></font></td>
+    <td width="64%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Gibt an, 
+    dass die Oberfläche des Graphen mit einem Farbverlauf von schwarz nach weiß 
+    gefüllt werden soll</font><!--mstheme--></font></td>
+    <td width="17%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">.View3D und .View4D</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="12%" valign="top" height="44"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_Colors2</font><!--mstheme--></font></td>
+    <td width="7%" valign="top" height="44"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">$3</font><!--mstheme--></font></td>
+    <td width="64%" valign="top" height="44"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Gibt an, 
+    dass die Oberfläche des Graphen mit einem Farbverlauf von blau nach grün 
+    gefüllt werden soll (schnellere Methode)</font><!--mstheme--></font></td>
+    <td width="17%" valign="top" height="44"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">.View3D und .View4D</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="12%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_NoBorders</font><!--mstheme--></font></td>
+    <td width="7%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">$4</font><!--mstheme--></font></td>
+    <td width="64%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Gibt an, dass die 
+    Flächen eines 3D-Graphen keine Begrenzung haben sollen (nur bei 
+    Farbverläufen)</font><!--mstheme--></font></td>
+    <td width="17%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">.View3D und .View4D</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="12%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_NoBinding</font><!--mstheme--></font></td>
+    <td width="7%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">$4</font><!--mstheme--></font></td>
+    <td width="64%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Die 
+    Ergebnisse des Graphen werden nicht miteinander verbunden (Interpolation)</font><!--mstheme--></font></td>
+    <td width="17%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">.Graph</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="12%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_NoHideBackface</font><!--mstheme--></font></td>
+    <td width="7%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">$8</font><!--mstheme--></font></td>
+    <td width="64%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Gibt an, 
+    dass die nicht sichtbaren Flächen eines 3D-Graphen gezeichnet werden sollen 
+    (Drahtgittermodell)</font><!--mstheme--></font></td>
+    <td width="17%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">.View3D und .View4D</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="12%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_CoordSystem</font><!--mstheme--></font></td>
+    <td width="7%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">$10</font><!--mstheme--></font></td>
+    <td width="64%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Gibt an, 
+    dass ein kartesisches Koordinatensystem gezeichnet werden soll</font><!--mstheme--></font></td>
+    <td width="17%" valign="top" height="22"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">.Graph, .View3D und 
+    .View4D</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="12%" valign="top" height="44"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_Labels</font><!--mstheme--></font></td>
+    <td width="7%" valign="top" height="44"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">$20</font><!--mstheme--></font></td>
+    <td width="64%" valign="top" height="44"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Gibt an, 
+    dass das Koordinatensystem die Bezeichnungen angezeigt bekommt (wird nur in 
+    Verbindung mit ~P_CoordSystem ausgewertet)</font><!--mstheme--></font></td>
+    <td width="17%" valign="top" height="44"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">.Graph, .View3D und 
+    .View4D</font><!--mstheme--></font></td>
+  </tr>
+</table>
+<!--mstheme--><font face="arial,helvetica">
+<p class="MsoNormal"><font face="Trebuchet MS">- Die Flags ~P_SolidFill, ~P_Colors, ~P_Colors2, ~P_Greyscale 
+und ~P_NoHideBackface sind nicht miteinander kombinierbar<br>
+- ~P_NoBorders ist nicht kombinierbar mit ~P_SolidFill und ~P_NoHideBackface</font></p>
+<p class="MsoNormal"><b><u><font size="5" face="Trebuchet MS"><a name="7"></a>7. 
+Handler</font></u></b></p>
+<p class="MsoNormal" align="left"><font face="Trebuchet MS">Über das Handling kann spezielles Verhalten des 
+Parsers eingestellt werden. Dazu werden die Funktionen SetHandler und 
+GetHandler verwendet (die Konstanten sind durch Einbinden der Datei 
+Parcival.ph verfügbar).</font></p>
+<!--mstheme--></font>
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" width="100%" height="37" bordercolorlight="#666666" bordercolordark="#666666">
+  <tr>
+    <td width="7%" height="18" valign="top" align="center"><!--mstheme--><font face="arial,helvetica">
+	<b><font face="Trebuchet MS">Wert</font></b><!--mstheme--></font></td>
+    <td width="9%" height="18" valign="top" align="center"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Konstante</font></b><!--mstheme--></font></td>
+    <td width="84%" height="18" valign="top" align="center"><!--mstheme--><font face="arial,helvetica"><b><font face="Trebuchet MS">Verhalten, wenn angeschaltet:</font></b><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="7%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">0</font><!--mstheme--></font></td>
+    <td width="9%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_NoAutoInt<br>
+    ~P_NoAutoInteger</font><!--mstheme--></font></td>
+    <td width="84%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Integerwerte für Operationen, die Integer-Werte voraussetzen werden 
+    nicht automatisch gebildet (siehe Stochastik usw.)</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="7%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">1</font><!--mstheme--></font></td>
+    <td width="9%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_AltCommaIntereprete</font><!--mstheme--></font></td>
+    <td width="84%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">„,“ wird als „;“ und nicht als „.“ interpretiert</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="7%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">2</font><!--mstheme--></font></td>
+    <td width="9%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_ExitOnError</font><!--mstheme--></font></td>
+    <td width="84%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Die Funktionen .Graph und .Render3D steigen bei einem undefinierten Ergebnis 
+    oder einem Ergebnis, welches gegen plus oder minus Unendlich geht, aus.</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="7%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">3</font><!--mstheme--></font></td>
+    <td width="9%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_BinaryLogic</font><!--mstheme--></font></td>
+    <td width="84%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">benutzt statt der logischen Operationen die entsprechenden binären (gilt nur 
+    für And, Or, XOr, NAnd, Not, NOr und NXOr)</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="7%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">4</font><!--mstheme--></font></td>
+    <td width="9%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">~P_Log<br>
+    ~P_Logfile<br>
+    ~P_CreateLogfile</font><!--mstheme--></font></td>
+    <td width="84%" height="18" valign="top"><!--mstheme--><font face="arial,helvetica"><font face="Trebuchet MS">Parcival erzeugt eine 
+    Log-Datei mit Informationen über Operationen, Fehler usw.</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="7%" height="18" valign="top">
+    <!--mstheme--><font face="arial,helvetica">
+    <font face="Trebuchet MS">5</font><!--mstheme--></font></td>
+    <td width="9%" height="18" valign="top">
+    <!--mstheme--><font face="arial,helvetica">
+    <font face="Trebuchet MS">~P_ShowVersion<br>
+    ~P_Version</font><!--mstheme--></font></td>
+    <td width="84%" height="18" valign="top">
+    <!--mstheme--><font face="arial,helvetica">
+    <font face="Trebuchet MS">Parcival zeigt ein Versionsinformationen links 
+    oben an</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="7%" height="18" valign="top">
+    <!--mstheme--><font face="arial,helvetica">
+    <font face="Trebuchet MS">6</font><!--mstheme--></font></td>
+    <td width="9%" height="18" valign="top">
+    <!--mstheme--><font face="arial,helvetica">
+    <font face="Trebuchet MS">~P_PreRender</font><!--mstheme--></font></td>
+    <td width="84%" height="18" valign="top">
+    <!--mstheme--><font face="arial,helvetica">
+    <font face="Trebuchet MS">Weist Parcival an, die Animation erst zu rendern 
+    und dann anzuzeigen. Bei sehr aufwändigen Animationen wird so Aussetzern 
+    während der Animation vorgebeugt. Diese Methode benötigt aber wesentlich 
+    mehr Arbeitsspeicher und mehr Zeit zum Vorrendern</font><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td width="7%" height="18" valign="top">
+    <!--mstheme--><font face="arial,helvetica">
+    <font face="Trebuchet MS">7</font><!--mstheme--></font></td>
+    <td width="9%" height="18" valign="top">
+    <!--mstheme--><font face="arial,helvetica">
+    <font face="Trebuchet MS">~P_Triangles<br>
+    ~P_TriangleMode</font><!--mstheme--></font></td>
+    <td width="84%" height="18" valign="top">
+    <!--mstheme--><font face="arial,helvetica">
+    <font face="Trebuchet MS">Zeichnet Dreiecke anstelle von Vierecken im 
+    3D-Modus</font><!--mstheme--></font></td>
+  </tr>
+</table>
+<!--mstheme--><font face="arial,helvetica">
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><u><font size="5" face="Trebuchet MS"><b><a name="8"></a>8. Fehlernummern</b></font></u></p>
+<p class="MsoNormal"><font face="Trebuchet MS">Über den Fehlercode kann herausgefunden werden, ob bei der 
+Berechnung ein Fehler aufgetreten ist.</font></p>
+<ol>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Kein Term!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Klammern unausgewogen!<i> (ab Version 1.0.0.0019 nicht 
+  gesetzt!)</i></font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Unerlaubtes Zeichen im Term!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Division durch Null!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Falsche Klammeranordnung!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Unerlaubte Anzahl/Position von 
+  &quot;°&quot;, &quot;²&quot;, &quot;³&quot; oder &quot;!&quot; in einer Zahl!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Fakultät einer negativen Zahl nicht möglich!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Mehrere Dezimalpunkte sind nicht erlaubt!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Mehrere aufeinander folgende Operatoren sind nicht 
+  erlaubt!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Operator am Anfang oder Ende des Terms nicht erlaubt!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Unbekanntes Schlüsselwort!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Nicht definierter Funktionswert!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Mehrere Parameter ohne zugehörige Funktion!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Zahl außerhalb des Bereichs für diese Funktion!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Schrittweite nähert den Startwert nicht dem Endwert!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Schrittweite darf nicht 0 sein!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Funktion für diesen Wert nicht definiert!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Operator fehlt!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Nach einer der verwendeten Funktionen darf keine weitere 
+  Operation erfolgen!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Natürliche Zahl erwartet!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">3D-Fenster nicht initialisiert!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Unerlaubtes Ergebnis! Funktion abgebrochen!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Nicht genügend Speicher für 
+  diese Funktion!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Nichtnumerisches Zeichen in 
+  Wertetabelle!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Graph nicht gerendert!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Operation abgebrochen!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Starteinheit ist nicht 
+  definiert!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Zieleinheit ist nicht 
+  definiert!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Maßeinheit ist nicht definiert!</font></li>
+  <li>
+  <p class="MsoNormal"><font face="Trebuchet MS">Keine freien Callbacks mehr!<br>
+&nbsp;</font></li>
+</ol>
+<p class="MsoNormal"><font face="Trebuchet MS"><u><b><font size="5">
+<a name="10"></a>9. Was ist neu und was soll noch kommen?</font></b></u></font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Pläne für zukünftige Versionen:<br>
+</b>- Erweiterung der Versionsinformationen durch ein richtiges Logo<br>
+- Erweiterung der Achsen von 3D-Graphen auf Bildbreite<br>
+- exaktere Polygonberechnung (mit gekrümmten Flächen)<br>
+- Einbau einer Interpolationsfunktion mit bikubischer Interpolation<br>
+- Benutzung von OpenGL oder DirectX zur Darstellung<br>
+- Eine hübsche Hilfedatei</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.9.1.0092 (30.09.2014, 
+offizielle Unit-Versionen 2.8.3.0038 (Plus) und 1.0.0.0002 (Standard)):<br>
+</b>- Fehler behoben, der Multiplikationen immer vor Divisionen ausführte<br>
+- 11 neue trigonometrische Funktionen</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.9.0.0090 (18.09.2007, 
+offizielle Unit-Versionen 2.8.3.0038 (Plus) und 1.0.0.0002 (Standard)):<br>
+</b>- Neue Konvertierungen im Bereich Energie</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.8.5.0089 (02.03.2007, 
+offizielle Unit-Versionen 2.8.3.0038 (Plus) und 1.0.0.0002 (Standard)):<br>
+</b>- Neue Funktionen: Ident(x;y), Pol(x;y)</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.8.4.0087 (25.12.2006, 
+offizielle Unit-Versionen 2.8.3.0038 (Plus) und 1.0.0.0002 (Standard)):<br>
+</b>- Die Funktion ArcTan wurde auf Assembler umgestellt und sollte jetzt 
+schneller sein</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.8.3.0086 (17.12.2006, 
+offizielle Unit-Versionen 2.8.3.0038 (Plus) und 1.0.0.0002 (Standard)):<br>
+</b>- Die Funktion .RegisterCallback wurde entfernt, weil sie nur in seltenen 
+Fällen funktioniert hat</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.8.2.0084 (11.12.2006, 
+offizielle Unit-Versionen 2.8.1.0037 (Plus) und 1.0.0.0001 (Standard)):<br>
+</b>- iFs Geburtstag als Konstante eingefügt</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.8.1.0083 (04.12.2006, 
+offizielle Unit-Versionen 2.8.1.0037 (Plus) und 1.0.0.0001 (Standard)):<br>
+</b>- Parcival wird ab sofort in 2 Editionen angeboten:<br>
+<b>&nbsp; Standard </b>enthält nur die Parserfunktionen (mit allem drum und 
+dran, außer Logdateien)<br>
+<b>&nbsp; Plus </b>enthält das komplette Parket wie vorher<br>
+&nbsp; Der Vorteil ist, dass man, wenn man nur den Parser nutzt, nun keine so 
+große DLL mehr braucht. Jedes Paket hat seine eigene Unit!<br>
+- Neue Funktion: .Edition </font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.8.0.0082 (02.12.2006, 
+offizielle Unit-Version 2.8.0.0036):<br>
+</b>- Parcival kann nun mit selbst definierten Variablen umgehen<br>
+- kleine Beschleunigung in Verbindung mit selbst definierten Funktionen</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.7.5.0081 (26.11.2006, 
+offizielle Unit-Version 2.7.4.0035):<br>
+</b>- Korrektur des Dreiecksmodus (Handler 7)</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.7.4.0079 (25.11.2006, 
+offizielle Unit-Version 2.7.4.0035):<br>
+</b>- Erweiterung der Funktion .CPUSpeed<br>
+- Update des Benchmarktools<br>
+- Korrektur des binären Not<br>
+- Neue Funktion: BNot<br>
+- Ergebnisse mit mehr als 40 Zeichen wurden nicht korrekt wiedergegeben</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.7.3.0078 (24.11.2006, 
+offizielle Unit-Version 2.7.3.0034):<br>
+</b>- Neues Benchmarktool (nur Parsertest, 3D-Test folgt noch)<br>
+- Korrektur der Unit (war nicht funktionsfähig)</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.7.2.0077 (22.11.2006, 
+offizielle Unit-Version 2.7.1.0032):<br>
+</b>- Neue Funktion: Thousands</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.7.1.0076 (21.11.2006, 
+offizielle Unit-Version 2.7.1.0032):<br>
+</b>- Neuer Handler (7 - Dreiecksmodus)<br>
+- Ungültige Handler werden jetzt auch angemeckert<br>
+- Neue Funktion .Benchmark funktioniert jetzt richtig (wurde in der letzten 
+Version schon im Geheimen und ohne Parameter eingeführt; funktionierte nicht!). 
+Achtung: Ich experimentiere noch mit den Algorithmen bzw. Tests, deshalb können 
+die Benchmarks in den kommenden Versionen abweichen<br>
+- Die Funktion .CPUSpeed wird freigegeben (die DLL hat die Funktion eigentlich 
+schon seit Version 1.0; in vorherigen Versionen die Funktion &quot;CPUSpeed&quot; der DLL 
+ohne Parameter aufrufen). Sie erfüllt parsermäßig eigentlich keinen Sinn</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.7.0.0075 (20.11.2006, 
+offizielle Unit-Version 2.7.0.0031):<br>
+</b>- Einige Fehler in Verbindung mit den selbst definierten Algorithmen zur 
+Farbfüllung wurden korrigiert<br>
+- Zwei undokumentierte Funktionen wurden hinzugefügt, die hier aber nicht 
+erwähnt werden, weil sie noch nicht zu 100% funktionieren!</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.6.4.0073 (04.11.2006, 
+offizielle Unit-Version 2.6.1.0030):<br>
+</b>- Behebung von zwei schweren Memory-Leaks</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.6.3.0072 (03.11.2006, 
+offizielle Unit-Version 2.6.1.0030):<br>
+</b>- Bugfix für P_NoBindings in .Graph()</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.6.2.0071 (03.11.2006, 
+offizielle Unit-Version 2.6.1.0030):<br>
+</b>- Bugfix der Funktionen Input(), Base() und Sci()<br>
+- Beschleunigung der Funktionen Base() und IsPrim()<br>
+- Generelle Beschleunigung um ca. 6-7%</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.6.1.0070 (03.11.2006, 
+offizielle Unit-Version 2.6.1.0030):<br>
+</b>- Beim Rendern mit der Prerenderfunktion kommt nun eine Fehlermeldung, wenn 
+nicht genügend Speicher vorhanden ist<br>
+- Unit: Einige Funktionen haben den letzten Fehler nicht korrekt in .error% 
+abgespeichert<br>
+- Aktualisierung der Header-Datei</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.6.0.0069 (18.10.2006, 
+offizielle Unit-Version 2.5.4.0029):<br>
+</b>- Wie versprochen ist die Anzahl der selbst definierten Callbackfunktionen 
+nicht mehr begrenzt (naja, das stimmt nicht ganz, es sind maximal
+<span class="descrLong"><span class="para">2147483647</span></span>, die Größe 
+wird dynamisch angepasst und reicht sicher aus)<br>
+- Neue Operatoren: &lt;, &gt;, =, &amp;, |<br>
+- Korrekturen im Loggen</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.5.4.0063 (12.09.2006, 
+offizielle Unit-Version 2.5.4.0029):<br>
+</b>- Ab sofort können frei definierbare Algorithmen für die Farbverläufe in 
+3D-Graphen verwendet werden<br>
+- .Init3D gibt jetzt bei Fehler eine Fehlernummer zurück<br>
+- Dank der neuen Funktion .RegisterCallback() ist es jetzt möglich, neue 
+Funktionen in den Parser zu integrieren (momentan 32)</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.5.3.0061 (08.09.2006, 
+offizielle Unit-Version 2.5.1.0028):<br>
+</b>- Durch einen Fehler stürzen Programme ab, wenn der Handler 4 auf 0 gesetzt 
+wird und schon auf 0 war (Loggen ausschalten)</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.5.2.0060 (05.09.2006, 
+offizielle Unit-Version 2.5.1.0028):<br>
+</b>- Kleine Fehler in der Unit, die mit der Initialisierung zu tun hatten, 
+entfernt<br>
+- In der Unit kann beim Initialisieren nun entweder der Pfad oder der Dateinamen 
+angegeben werden<br>
+- Neue Funktionen: BAnd, BNAnd, BNOr, BNXOr, BOr, BXOr (binäre Operatoren; damit 
+ist ein Einstellen mittels ~P_BinaryLogic nicht mehr nötig)<br>
+- Neuer Handler: 6 ~P_PreRender (erlaubt das Rendern einer Animation vor dem 
+Anzeigen)<br>
+- Durch einen Bug stürzte Parcival ab, wenn das Loggen eingeschaltet wurde und 
+schon eingeschaltet war<br>
+- Das Loggen wurde stark verbessert</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.5.1.0059 (09.08.2006, 
+offizielle Unit-Version 2.5.1.0027):<br>
+</b>- Bugfix des Callbackaufrufs von .View4D, der manchmal eine falsche 
+Framenummer ausgegeben hatte<br>
+- Erweiterung der Konvertierungsfunktion um 2 Einheiten<br>
+- .Result$ wird nun korrekt gesetzt (nur von .Convert(), .Table, .Parse(), .Product() 
+und .Sum())<br>
+- Das Loggen wurde erweitert</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.5.0.0057 (31.07.2006, 
+offizielle Unit-Version 2.5.0.0026):<br>
+</b>- Neue DLL-Funktion: &quot;Convert&quot; (konvertiert physikalische Werte). 
+Die Funktion befindet sich noch in der Aufbau- und Testphase<br>
+- Neue Fehlermeldungen (27-29)</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.2.1.0053 (16.07.2006, 
+offizielle Unit-Version 2.2.0.0025):<br>
+</b>- Erweiterung der Callback-Funktionen durch Rückgabewerte<br>
+- Neuer Fehler 26<br>
+- Einige Operationen haben im Fehlerfall keine korrekten Log-Daten geschrieben</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.2.0.0051 (09.07.2006, 
+offizielle Unit-Version 2.2.0.0025):<br>
+</b>- Erweiterungen um Callback-Funktionen</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.1.0.0049 (28.06.2006, 
+offizielle Unit-Version 2.1.0.0024):<br>
+</b>- Ab XProfan 9 kann Parcival nun mit &quot;New()&quot; initialisiert werden<br>
+- Anstelle des Verzeichnisses für die Parcival.dll kann nun auch direkt der 
+Dateiname angegeben werden<br>
+- Wenn nach einem Postfix eine einzelne Ziffer kam, wurde dies nicht korrekt 
+erkannt<br>
+- Ab sofort geben mehr Fehlertexte die exakte Fehlerstelle aus<br>
+- Neue Variable &quot;.Init%&quot; zeigt an, ob Parcival korrekt initialisiert wurde<br>
+- Die Funktionen .Version(), .Date() und .PCUVersion() werden ab sofort durch 
+die Variablen .Version$, .Date$ und .PCUVersion$ ersetzt. Sie sollten vom 
+Benutzer nicht verändert werden<br>
+- Neue Funktionen: Digit, Neg und Range<br>
+- Die Variable .errcnt% wird nun beim Initialisieren korrekt gesetzt<br>
+- Neue Klassen-Funktion: .Validate()</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.0.3.0044 (07.06.2006, 
+offizielle Unit-Version 2.0.1.0022):<br>
+</b>- Die Funktionen .Graph, .View3D und .View4D zeigen nun optional 
+Versionsinformationen in der linken oberen Ecke an (Handler 5)</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.0.2.0043 (01.06.2006, 
+offizielle Unit-Version 2.0.1.0022):<br>
+</b>- Die Log-Datei wird nun nicht mehr unter &quot;C:\&quot; sondern im Verzeichnis der 
+DLL erstellt<br>
+- Neue Funktionen: Quersum und XQuersum<br>
+- Optimierung der Funktionen (durch Neusortierung, häufig genutzte Funktionen 
+können so schneller aufgerufen werden)<br>
+- Einbau der Funktion &quot;Log&quot;, die zwar immer beschrieben war, die ich aber 
+offensichtlich vergessen hab</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.0.1.0040 (20.05.2006, 
+offizielle Unit-Version 2.0.1.0022):<br>
+</b>- Viele Optimierungen im Quelltext<br>
+- einige Memory-Leaks behoben<br>
+- Die Funktion .Graph hat immer ein Koordinatensystem gezeichnet (auch wenn dies 
+nicht erwünscht war)<br>
+- Die Zeichenflags für 3D- und 4D-Graphen werden nun in .View3D und .View4D 
+übergeben<br>
+- Der Hintergrund hinter 3D-Graphen wird nun richtig übernommen<br>
+- Neue Variable .errcnt% (gibt die Anzahl der vorhandenen Fehlermeldungen 
+zurück; z. B. für Fehlertabellen)<br>
+- .View3D und .View4D zeigen nun auf auch Koordinatensystem und Labels an<br>
+- Das Loggen wurde etwas erweitert</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 2.0.0.0037 (17.05.2006, 
+offizielle Unit-Version 2.0.0.0021):<br>
+</b>- Neues System zum Rendern von 3D-Graphen; Fehler 25<br>
+- Animierte 3D-Graphen<br>
+- Die Graphen können nun auch ohne Flächenbegrenzung angezeigt werden (nur bei 
+Farbverläufen)<br>
+- Die Farbverläufe sind nun besser gestuft (plus neue Farbverlaufmethoden)<br>
+- Neuer Handler: 4 -&gt; automatische Logdatei erstellen (in &quot;C:\&quot;)<br>
+- Die maximale Anzahl der Teilflächen der 3D-Graphen ist nicht mehr auf 256 
+in jeder Dimension beschränkt. Die maximal mögliche Anzahl hängt nun von der 
+Größe des Hauptspeichers ab (siehe Fehlermeldung 23)<br>
+- Die Postfixe &quot;²&quot; und &quot;³&quot; sind dazugekommen (Quadrat bzw. dritte Potenz einer 
+Zahl)<br>
+- Optimierung von &quot;Input(time;...)&quot; und &quot;Input([base];...)&quot;<br>
+- Ein Fehler wurde behoben wenn als erstes Handle 0 angegeben wurde (bei 
+.Graph, .View3D und .View4D)<br>
+- Bugfix der Funktionen &quot;shl&quot; und &quot;shr&quot;<br>
+- Die fehlende Beschreibung des Fehlers 23 in .ErrCode wurde hinzugefügt<br>
+- Die Funktionen .Table, .Sum und .Product akzeptieren jetzt auch Wertetabellen. 
+Zur Angabe einer Wertetabelle muss einfach ein &quot;$&quot; vorangesetzt werden (Werte 
+wieder durch &quot;|&quot; getrennt; nicht definierte Werte (repräsentiert durch &quot;#&quot;) 
+können müssen nicht rausgefiltert werden). Neu ist dadurch auch Fehler 24<br>
+- Die fehlerhafte Rückgabe der Mittelwerte wurde behoben<br>
+- Korrektur der Postfixe<br>
+- Die Berechnung des harmonischen Mittelwertes wurde korrigiert<br>
+- Bugfix des ErrorHandlers 0 (funktionierte genau andersherum)<br>
+- Einige Variablen der Klasse waren am Anfang nicht initialisiert; das geschieht 
+nun automatisch über .Init<br>
+- Neue Variable .PolyCount&amp; (Gibt die Anzahl der gerenderten 
+Polygone von .Render3D zurück)</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 1.1.0.0027 (05.05.2006, 
+offizielle Unit-Version 1.1.0.0017):<br>
+</b>- Neue Funktionen: DivMod, Time, Sci und Input<br>
+- Neue Variablen: .amid!, .gmid! und .hmid! geben das arithmetische, geometrische 
+bzw. harmonische Mittel einer Tabelle, Summe oder eines Produkts zurück<br>
+- &quot;ArabToRoem&quot; jetzt auch über &quot;Roem&quot; erreichbar<br>
+- Die Variablen &quot;pi&quot;, &quot;phi&quot;, &quot;ez&quot; und &quot;ans&quot; sind ab jetzt über &quot;%pi%&quot;, &quot;%phi%&quot;, 
+&quot;%ez%&quot; und &quot;%ans&quot; zu erreichen!<br>
+- Bugfix der Funktionen, die den Parser zum sofortigen Beenden bringen, weil sie 
+nichtmathematische Werte zurückgeben (Base,  FracPC, ArabToRoem)<br>
+- Vor und nach Konstanten und Variablen, sowie vor Funktionen kann ab sofort das 
+&quot;*&quot;, soweit die mathematischen Regeln das zulassen, weggelassen werden<br>
+- Parcival testet nun, ob die DLL-Version mit der eingebundenen Unit kompatibel ist<br>
+- Etliche Fehler mit Kommazahlen und Zahlen mit Exponenten (&quot;E+&quot; und &quot;E-&quot;) 
+wurden behoben<br>
+- Minimale Probleme mit negativen Variablen behoben<br>
+- Einige kleinere Performanceverbesserungen im alten Code; durch den neuen Code 
+sinkt die Performance jedoch auf ca. 395</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b>Version 1.0.0.0022 
+(25.04.2006, offizielle Unit-Version 1.0.0.0011):<br>
+</b>- Erstes Release nach einer sehr langen Alpha, einer noch längeren Beta-Phase und ausgiebigen Tests. Der 
+Geschwindigkeitsfaktor gegenüber der XProfan-Version liegt bei etwa 475 zu 1 (zum 
+Vergleich: die erste Delphi-Version hatte ca. 120:1, Version 1.0.0.0020 RC1 lag bei 350:1, da ich da noch mit Delphi 7 
+gearbeitet habe). Alle gefundenen Bugs wurden behoben und alle beschriebenen 
+Funktionen mit Ausnahme der Achsen und Achsenbezeichnungen für 3D-Graphen 
+eingebaut.</font></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><u><b><font size="5" face="Trebuchet MS"><a name="9"></a>10. Über mich und meine Motivation</font></b></u></p>
+<p class="MsoNormal"><font face="Trebuchet MS">Tja, wo soll ich da anfangen...In 
+der 7. Klasse habe ich einen &quot;grafikfähigen Taschenrechner&quot; bekommen. Da ich 
+schon Erfahrungen mit Turbo Pascal gemacht habe und schon erste Schritte in 
+Profan² 3.3 gewagt habe, habe ich überlegt, ob ich die Funktionen des GTR nicht 
+auf meinem Rechner umsetzen könnte. Nun ja, damit war die Idee meines Parsers 
+geboren. Leider habe ich noch 8 Jahre gebraucht, bis ich mich endlich mal 
+durchgerungen habe um einen richtigen Parser zu schreiben. Alles vorherige war 
+nicht wirklich sinnvoll zu gebrauchen. Die Netto-Programmierzeit des Parsers 
+(also Anfang des Parsers in XProfan 9, Umschreiben in Delphi und 
+Weiterentwicklung bis zur Version 1.0) dauerte nur knapp 2 Monate! Ein 
+vollständiger GTR ist dabei zwar noch nicht rausgekommen, aber das Ergebnis 
+trägt den Namen &quot;Parser&quot; zurecht. Außerdem kann Parcival ja noch viel mehr als 
+nur Terme parsen (siehe Hilfe).</font></p>
+
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><u><b>
+<font size="5" face="Trebuchet MS">11. Danksagungen und Urheberverzeichnis</font></b></u></p>
+<p class="MsoNormal"><font face="Trebuchet MS">Folgende Personen haben an Parcival mitgewirkt:</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b><i>Jac de Lad</i> </b>aka <i><b>Jacob Liebeck </b></i>(<a href="mailto:jacdelad@yahoo.de">Kontakt</a>):<br>
+- Idee<br>
+- Programmierung<br>
+- Umsetzung<br>
+- XProfan-Unit<br>
+- Hilfe-Datei<br>
+- Support</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b><i>[::Mr Baque]</i></b> aka <i><b>Daniel Hoffmann </b>
+</i>(<a href="mailto:dani_hoff_84@yahoo.de">Kontakt</a>):<br>
+- Transformationsformel für 3D-Graphen<br>
+- Optimierung der Funktionen GGT() und KGV()</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><b><i>Ceph</i></b> aka <i><b>Sebastian Metzner</b></i>:<br>
+- Die Funktion FracPC()</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><i><b>Michael Wodrich</b></i>:<br>
+- Umsetzung der Funktion ArabToRoem() (bzw. Roem()) und Roem für Input() in XProfan</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS"><i><b>Martin Kempf:<br>
+</b></i>- Hat mich auf einen üblen Fehler aufmerksam gemacht, den ich dann 7 
+Jahre nach der letzten Version behoben habe</font></p>
+
+<p class="MsoNormal"><font face="Trebuchet MS">Und auch noch vielen Dank an die 
+XProfan-Community (<a href="http://www.xprofan.com">xprofan.com</a>), die mich 
+kräfitg unterstützt hat und mir viele Tipps und Hilfestellungen gegeben hat. 
+Ganz speziell an iF, Frank Abbing, Rolf Koch und Dietmar Horn.</font></p>
+<p class="MsoNormal"><font face="Trebuchet MS">Und natürlich vielen Dank an
+<a href="http://www.delphi-forum.de">Delphi-Forum.de</a>, wo mir auch sehr 
+viele, hilfsbereite Mitglieder geholfen haben!</font></p>
+
+<!--mstheme--></font>
+
+</body>
+
+</html>

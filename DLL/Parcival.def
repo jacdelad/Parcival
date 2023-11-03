@@ -1,0 +1,65 @@
+XPSE PCU-Exports Fileversion 1
+PARCIVAL.PCU Exporte (20061228204546)
+ |
+ |   [+]-.?_
+ |   [^]-Params: p$
+ |   
+ |   [+]-.INIT
+ |   [^]-Params: p$
+ |   
+ |   [+]-.SET
+ |   [^]-Params: a$,b$
+ |   
+ |   [+]-.BENCHMARK
+ |   [^]-Params: a&
+ |   
+ |   [+]-.CPUSPEED
+ |   [^]-Params: a&
+ |   
+ |   [+]-.VIEW4D
+ |   [^]-Params: a!,b!,c!,d!,e!,f!,g!,h!,f&,i!,j!,k!,l&,m&,r&
+ |   
+ |   [+]-.VIEW3D
+ |   [^]-Params: a!,b!,c!,d!,e!,f!,g!,h!,f&
+ |   
+ |   [+]-.RENDER3D
+ |   [^]-Params: t$,a!,b!,c!,d!,e!,f!,g!,h!,pa&
+ |   
+ |   [+]-.INIT3D
+ |   [^]-Params: a&,b&,c&,d&,e&,f&,g&,h&,a$
+ |   
+ |   [+]-.TABLE
+ |   [^]-Params: term$,min!,max!,step!
+ |   
+ |   [+]-.SUM
+ |   [^]-Params: term$,min!,max!,step!
+ |   
+ |   [+]-.PRODUCT
+ |   [^]-Params: term$,min!,max!,step!
+ |   
+ |   [+]-.GRAPH
+ |   [^]-Params: term$,hand1&,hand2&,xleft&,yleft&,xright&,yright&,xmi!,xma!,ymi!,yma!,sx!,color&,flags&
+ |   
+ |   [+]-.SETHANDLER
+ |   [^]-Params: bit&,wert&
+ |   
+ |   [+]-.GETHANDLER
+ |   [^]-Params: bit&
+ |   
+ |   [+]-.ERRCODE
+ |   
+ |   [+]-.PARSE
+ |   [^]-Params: t$
+ |   
+ |   [+]-.TABLE2
+ |   [^]-Params: term$,min!,max!,step!,typ%
+ |   
+ |   [+]-.DEINIT
+ |   
+ |   [+]-.VALIDATE
+ |   [^]-Params: p$
+ |   
+ |   [+]-.CONVERT
+ |   [^]-Params: basis&,e1&,e2&,wert!
+ |
+PCUSIZE= 6959 Bytes

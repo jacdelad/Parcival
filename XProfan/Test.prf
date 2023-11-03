@@ -1,0 +1,10 @@
+$MAKE I
+
+declare lw&[2],c&,lw$
+cls
+whileloop 0,2
+lw$=Mid$("MTU",&Loop+1,1)
+Print "Untersuche "+lw$+":\"
+
+endwhile
+waitinput

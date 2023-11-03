@@ -1,0 +1,26 @@
+'{$iq}
+$MAKE N
+$TOOL N D:\XProfan\XProfan\PROFCOMP.EXE "%" -R "D:\XProfan\XProfan\Prfrun32.exe" -L -B
+$TOOL N D:\XProfan\Projekte\Parcival\XT.exe
+$U D:\XProfan\Projekte\Parcival\ParcivalMin.PCU=P.
+declare a$,dll&
+
+'dll&=UseDll("D:\\XProfan\\Projekte\\Parcival\\ParcivalMin.dll")
+cls
+P.Init("D:\XProfan\Projekte\Parcival")
+Print P.Version$
+Print P.Parse("9.61*5.13/2")
+Print P.Parse("9.61/2*5.13")
+waitinput
+P.DeInit()
+progend
+
+
+P.Init("E:\Projekte\Parcival")
+cls
+whileloop 0,1000
+case P.Parse("Prim("+Str$(&Loop)):Print Str$(&Loop)
+endwhile
+Print "-Taste-"
+P.DeInit()
+Waitinput
